@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
+from scipy import stats
 
 
 """
@@ -71,7 +72,59 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
     
     #KS Test
+    print("\n-----------------------Kolmogorov Smirnov Test-------------------------------")
+    # Subset to select only numerical variables columns --> KS Test only works with numerical
+    df_KS = df_table.select_dtypes(include = ["float64"])
+
+    def standardize(sample):
+        return (sample - np.mean(sample)) / np.std(sample)
+
+    def ks_test(sample):
+        # Sort the sample
+        sample_sorted = np.sort(sample)
+        # Evaluate the empirical CDF (ECDF)
+        ecdf = np.arange(1, len(sample_sorted)+1) / len(sample_sorted)
+        # Evaluate the theoretical CDF
+        cdf = stats.norm.cdf(sample_sorted)
+        # Calculate the KS statistic
+        ks_stat = np.max(np.abs(ecdf - cdf))
+        # Calculate the p-value
+        p_value = stats.kstest(sample_sorted, 'norm').pvalue
+        return ks_stat, p_value
     
+    # Temporary KS Test
+    var_count = len(df_KS.columns)-1
+
+    #creates an empty array to print values in a table
+    results = [] 
+
+    for i in range(0, var_count):
+        # Select one feature from the dataset (Example: assuming the first column is numeric)
+        sample = df_KS.iloc[:, i]  # Change the column index as needed
+        # Standardize the sample
+        standardized_sample = standardize(sample)
+        # Perform the KS test on standardize sample
+        ks_stat, p_value = ks_test(standardized_sample)
+        # Determine if we reject or fail to reject the null hypothesis
+        # If sample does not come from a normal distribution ---> reject H0
+        # If sample comes from a normal distribution ---> fail to reject H0
+        normal_dist = p_value > 0.05
+        hypothesis_result = "Fail to reject H0" if normal_dist else "Reject H0"
+
+        # Append results to the list
+        results.append({
+            "Feature": df_KS.columns[i],
+            "KS Statistic": f"{ks_stat:.4f}",
+            "P-Value": f"{p_value:.3e}",
+            "Normal Distribution": normal_dist,
+            "Hypothesis Result": hypothesis_result})
+    
+    # Create a DataFrame from the results
+    results_df = pd.DataFrame(results)
+
+    # Print the DataFrame
+    print(results_df.to_string(index=False))
+
     
     #KL Diverge
 
