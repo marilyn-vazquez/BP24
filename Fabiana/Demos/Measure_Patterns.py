@@ -6,6 +6,7 @@ import numpy as np
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from scipy import stats
+from itertools import combinations
 
 
 """
@@ -15,7 +16,7 @@ if optional is not provided, then the program will assume that the column has in
 """
 
 #load dataset 
-data = np.loadtxt("uniform_large_d_1.tex")
+data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/Uniform - large distance/uniform_large_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -65,7 +66,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
 
 
-    # Correlation between columns (numerical) Code
+    ##################### Correlation between columns (numerical) Code
     # takes the X_train data to find correlation between numerical columns
     def num_corr(X_train):
         matrix = X_train.corr(method='pearson')
@@ -74,10 +75,85 @@ def Measure_Patterns(X_train, y_train, optional=None):
     #Calls the function so the matrix prints out    
     num_corr(X_train)
     
-    # Chi-Square (F vs F / F vs label column) Code
+    ##################### Chi-Square (F vs F) Code
     
+    # Finds dependency between all features in X_train
+    def chi_squared_fvf(X_train):
+        # Extract variable names
+        variable_names = list(X_train.columns)
+
+        # Initialize matrices to store chi-squared and p-values
+        num_variables = len(variable_names)
+        chi_squared = np.zeros((num_variables, num_variables))
+        p_values = np.zeros((num_variables, num_variables))
+
+        # Compute chi-squared and p-values for each pair of variables
+        print("Chi-Squared Statistics for Features v. Features")
+        for i, j in combinations(range(num_variables), 2):
+            contingency_table = pd.crosstab(X_train.iloc[:, i], X_train.iloc[:, j])
+            
+            # Compute chi-squared and p-values
+            chi2 = stats.chi2_contingency(contingency_table)[0]
+            p = stats.chi2_contingency(contingency_table)[1]
+            
+            # Assign results to chi_squared and p_values matrices
+            chi_squared[i, j] = chi2
+            chi_squared[j, i] = chi2  # Assign to symmetric position in the matrix
+            p_values[i, j] = p
+            p_values[j, i] = p  # Assign to symmetric position in the matrix
+
+        # Create a DataFrame with variable names as index and columns
+        chi_squared_df = pd.DataFrame(chi_squared, index=variable_names, columns=variable_names)
+        p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+
+        # Printing the matrix-like output with variable names
+        print("Chi-Squared Values:")
+        print(chi_squared_df)
+        print("\nP-Values:")
+        print(p_values_df)
     
-    #KS Test
+    chi_squared_fvf(X_train)
+    
+    ##################### Chi-Square (F vs label column) Code
+    
+    # Finds dependency between all features in X_train & the label in y_train
+    def chi_squared_fvl(X_train):
+        
+        # Combining X_train and y_train
+        df = X_train
+        df['label'] = y_train
+
+        # Number of features, excluding label
+        var_count = len(df.columns)-1
+
+        # Creates an empty array to print values in a table
+        results = []
+
+        for i in range(0, var_count):
+
+            # Create contigency table of all features v. label
+            crosstab = pd.crosstab(df.iloc[:, i], df.iloc[:,-1])
+            
+            # Compute chi-squared and p-values
+            chi2 = stats.chi2_contingency(crosstab)[0]
+            p = stats.chi2_contingency(crosstab)[1]
+            
+            # Append results to the list
+            results.append({
+                "Feature": df.columns[i],
+                "Chi Squared Statistic": chi2,
+                "P-Value": p})
+
+        # Create a DataFrame from the results
+        results_df = pd.DataFrame(results)
+
+        # Print the DataFrame
+        print("Label:", df.columns.values[-1])
+        print(results_df.to_string(index=False))
+    
+    chi_squared_fvl(X_train)
+    
+    ##################### KS Test
     print("\n-----------------------Kolmogorov Smirnov Test-------------------------------")
     # Subset to select only numerical variables columns --> KS Test only works with numerical
     df_KS = X_train.select_dtypes(include = ["float64"])
@@ -130,9 +206,11 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
     # Print the DataFrame
     print(results_df.to_string(index=False))
+    
+    ##################### Histogram/Graphing
 
     
-    #KL Diverge
+    ##################### KL Diverge
 
 
 
@@ -147,3 +225,4 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
 # Call the measure_patterns function
 Measure_Patterns(X_train, y_train)
+
