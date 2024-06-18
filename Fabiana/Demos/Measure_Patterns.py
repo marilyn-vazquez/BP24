@@ -16,7 +16,7 @@ if optional is not provided, then the program will assume that the column has in
 """
 
 #load dataset 
-data = np.loadtxt("uniform_large_d_1.tex")
+data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/Uniform - large distance/uniform_large_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -35,34 +35,15 @@ X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_t
 
 # Function Measure_Patterns begins here!
 def Measure_Patterns(X_train, y_train, optional=None):
-    # Check if the data type is provided for columns
-    if optional is None:
-        print("Optional parameter not provided. Assuming integers values are categorical")
-        optional = {}
-    # Classify columns based on their data type
-    def classify_columns(column):
-        if np.issubdtype(column.dtype, np.number):
-            if column.dtype == "float":
-                return "numerical"
-            else:
-                return "categorical"
-        else:
-            return "categorical"
     
-    # Default factory function which returns 'categorical' for any key not found in 'optional'
-    column_types = defaultdict(lambda: "categorical", {col: classify_columns(X_train[col]) for col in X_train.columns})
+    
+    ### TO DO: Identify y_train type? Turn into categorical?
+    
+    # Splitting X_train into numerical subset 
+    numerical_df = X_train.select_dtypes(include=['number'])
 
-    # Update column_types with any specific types from the optional dictionary
-    column_types.update(optional)
-    
-    # Create a list to store column information
-    columns_info = [{'Column': col, 'Type': column_types[col]} for col in X_train.columns]
-    
-    # Create a DataFrame from the columns information
-    columns_info_df = pd.DataFrame(columns_info)
-    
-    # Print the DataFrame
-    print(columns_info_df)
+    # Splitting X_train into categorical subset 
+    categorical_df = X_train.select_dtypes(include=['object', 'category'])
 
 
 
@@ -73,12 +54,13 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print("Correlation Matrix: \n", matrix)
      
     #Calls the function so the matrix prints out    
-    num_corr(X_train)
+    num_corr(numerical_df)
     
 ##################### Chi-Square (F vs F) Code ################################################
     
     # Finds dependency between all features in X_train
     def chi_squared_fvf(X_train):
+        
         # Extract variable names
         variable_names = list(X_train.columns)
 
@@ -112,12 +94,12 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print("\nP-Values:")
         print(p_values_df)
     
-    chi_squared_fvf(X_train)
+    chi_squared_fvf(categorical_df)
     
 ##################### Chi-Square (F vs label column) Code ####################################
     
     # Finds dependency between all features in X_train & the label in y_train
-    def chi_squared_fvl(X_train):
+    def chi_squared_fvl(X_train, y_train):
         
         # Combining X_train and y_train
         df = X_train
@@ -151,12 +133,12 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print("Label:", df.columns.values[-1])
         print(results_df.to_string(index=False))
     
-    chi_squared_fvl(X_train)
+    chi_squared_fvl(categorical_df, y_train)
     
 ################################# KS Test ###########################################
     print("\n-----------------------Kolmogorov Smirnov Test-------------------------------")
     # Subset to select only numerical variables columns --> KS Test only works with numerical
-    df_KS = X_train.select_dtypes(include = ["float64"])
+    df_KS = numerical_df
 
     def standardize(sample):
         return (sample - np.mean(sample)) / np.std(sample)
