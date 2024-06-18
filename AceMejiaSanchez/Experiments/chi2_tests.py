@@ -80,8 +80,10 @@ print(p_values_df)
 
 ############### CHI-SQUARE TEST FOR LABEL V. ALL FEATURES #####################
 
+
 # Number of features, excluding label
 var_count = len(df_categorical.columns)-1
+
 
 # Creates an empty array to print values in a table
 results = []
