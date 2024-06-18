@@ -4,6 +4,8 @@ import pdb
 import pandas as pd
 import numpy as np
 from collections import defaultdict
+from sklearn.model_selection import train_test_split
+
 
 """
 The function Measure_Patterns has 3 parameters: X_train, y_train, optional
@@ -13,16 +15,27 @@ if optional is not provided, then the program will assume that the column has in
 
 #load dataset 
 
+#This is what I implemented --Fabi
+#load dataset
+data = np.loadtxt("uniform_large_d_1.tex")
 
+# Creating NumPy array
+array = np.array(data)
+
+# Converting to Pandas DataFrame
+df_table = pd.DataFrame(array)
+
+# Displaying the table
+print(df_table)
 
 
 # Split dataset into X_train and y_train
+X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
 
 
 
 
-
-# Function measure_patterns begins here!
+# Function Measure_Patterns begins here!
 def Measure_Patterns(X_train, y_train, optional=None):
     
     # Check if the data type is provided for columns
@@ -54,6 +67,29 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
     # Print the DataFrame
     print(columns_info_df)
+
+
+
+    # Correlation between columns (numerical + categorical) Code
+    
+    
+    # Chi-Square (F vs F / F vs label column) Code
+    
+    
+    #KS Test
+    
+    
+    #KL Diverge
+
+
+
+
+
+
+
+
+
+
 
 
 # Call the measure_patterns function
