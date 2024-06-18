@@ -7,7 +7,7 @@ from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from scipy import stats
 from itertools import combinations
-
+from sklearn.datasets import load_iris
 
 """
 The function Measure_Patterns has 3 parameters: X_train, y_train, optional
@@ -208,13 +208,27 @@ def Measure_Patterns(X_train, y_train, optional=None):
     print(results_df.to_string(index=False))
     
 ########################## Histogram/Graphing ###############################
+# Load the Iris dataset
+iris = load_iris()
+data = iris.data[:, 0]  #Using sepal length as an example
 
+hist, bin_edges = np.histogram(data, bins = 10)
+
+print("Bin Heights:", hist) #hist: Contains the counts of sepal lengths falling into each of the 10 bins.
+print("Bin Edges:", bin_edges) #bin_edges: Contains the boundaries of these 10 bins.
     
+bin_heights = []
+bin_heights.extend(hist)
+print("Array with bin heights:", bin_heights)
 
+bin_probs = []
+bin_probs.extend(hist)
+print("Array with bin probabilities:", bin_heights/(sum(bin_heights)))
 
-
-
-
+for i in range(len(hist)):
+    bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"
+    bin_probability = hist[i] / sum(hist)
+    print(f"Bin {i+1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
 
 ############################ KL Diverge ####################################
 
