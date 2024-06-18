@@ -16,7 +16,7 @@ if optional is not provided, then the program will assume that the column has in
 """
 
 #load dataset 
-data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/Uniform - large distance/uniform_large_d_1.tex")
+data = np.loadtxt("uniform_large_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -66,7 +66,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
 
 
-    ##################### Correlation between columns (numerical) Code
+##################### Correlation between columns (numerical) Code ############################
     # takes the X_train data to find correlation between numerical columns
     def num_corr(X_train):
         matrix = X_train.corr(method='pearson')
@@ -75,7 +75,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
     #Calls the function so the matrix prints out    
     num_corr(X_train)
     
-    ##################### Chi-Square (F vs F) Code
+##################### Chi-Square (F vs F) Code ################################################
     
     # Finds dependency between all features in X_train
     def chi_squared_fvf(X_train):
@@ -114,7 +114,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
     chi_squared_fvf(X_train)
     
-    ##################### Chi-Square (F vs label column) Code
+##################### Chi-Square (F vs label column) Code ####################################
     
     # Finds dependency between all features in X_train & the label in y_train
     def chi_squared_fvl(X_train):
@@ -153,7 +153,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
     chi_squared_fvl(X_train)
     
-    ##################### KS Test
+################################# KS Test ###########################################
     print("\n-----------------------Kolmogorov Smirnov Test-------------------------------")
     # Subset to select only numerical variables columns --> KS Test only works with numerical
     df_KS = X_train.select_dtypes(include = ["float64"])
@@ -207,10 +207,16 @@ def Measure_Patterns(X_train, y_train, optional=None):
     # Print the DataFrame
     print(results_df.to_string(index=False))
     
-    ##################### Histogram/Graphing
+########################## Histogram/Graphing ###############################
 
     
-    ##################### KL Diverge
+
+
+
+
+
+
+############################ KL Diverge ####################################
 
 
 
