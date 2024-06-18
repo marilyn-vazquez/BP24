@@ -65,8 +65,14 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
 
 
-    # Correlation between columns (numerical + categorical) Code
-    
+    # Correlation between columns (numerical) Code
+    # takes the X_train data to find correlation between numerical columns
+    def num_corr(X_train):
+        matrix = X_train.corr(method='pearson')
+        print("Correlation Matrix: \n", matrix)
+     
+    #Calls the function so the matrix prints out    
+    num_corr(X_train)
     
     # Chi-Square (F vs F / F vs label column) Code
     
