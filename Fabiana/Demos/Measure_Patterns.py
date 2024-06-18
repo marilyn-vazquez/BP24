@@ -7,7 +7,8 @@ from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from scipy import stats
 from itertools import combinations
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 """
 The function Measure_Patterns has 3 parameters: X_train, y_train, optional
@@ -74,6 +75,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
      
     #Calls the function so the matrix prints out    
     num_corr(X_train)
+    #return(matrix)
     
 ##################### Chi-Square (F vs F) Code ################################################
     
@@ -209,14 +211,12 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
 ########################## Histogram/Graphing ###############################
 
-    
 
 
 
 
 
-
-############################ KL Diverge ####################################
+############################ KL Diverge #####################################
 
 
 
