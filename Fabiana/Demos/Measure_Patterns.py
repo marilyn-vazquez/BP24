@@ -80,7 +80,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
     #KS Test
     print("\n-----------------------Kolmogorov Smirnov Test-------------------------------")
     # Subset to select only numerical variables columns --> KS Test only works with numerical
-    df_KS = df_table.select_dtypes(include = ["float64"])
+    df_KS = X_train.select_dtypes(include = ["float64"])
 
     def standardize(sample):
         return (sample - np.mean(sample)) / np.std(sample)
