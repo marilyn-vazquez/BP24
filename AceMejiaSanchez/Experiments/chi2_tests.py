@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import scipy.stats as stats
 
+
 data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/Gaussian - small distance/gaussian_small_d_1.tex")
 
 # Creating NumPy array
