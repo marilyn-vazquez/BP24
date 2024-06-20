@@ -36,9 +36,16 @@ df_table.iloc[:, 150] = df_table.iloc[:, 150].astype("category")
 
 
 
+
 # Split dataset into X_train and y_train
 X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
 
+
+#true if nums
+#false otherwise
+#[true false true]
+#num = data.iloc['']
+#cat = data.iloc['']
 
 
 # Function Measure_Patterns begins here!
@@ -49,11 +56,11 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print("Optional parameter not provided. Assuming integers values are categorical")
         optional = {}
     
-    # Splitting X_train into numerical subset 
-    numerical_df = X_train.select_dtypes(include=['number'])
+        # Splitting X_train into numerical subset 
+        numerical_df = X_train.select_dtypes(include = ["float64"])
 
-    # Splitting X_train into categorical subset 
-    categorical_df = X_train.select_dtypes(include=['object', 'category'])
+        # Splitting X_train into categorical subset 
+        categorical_df = X_train.select_dtypes(exclude=['float64'])
     
     # Check if the data type is provided for columns
     #if optional is None:
