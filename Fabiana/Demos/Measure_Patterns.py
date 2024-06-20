@@ -21,7 +21,6 @@ data = np.loadtxt("uniform_large_d_1.tex")
 =======
 #load dataset 
 data = np.loadtxt("/Users/elleemortensen/Documents/GitHub/BP24/Ellee/gaussian_large_d_1.tex")
->>>>>>> 9b67a584c65e86c42c96d65a540a9424c0f7187c
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
