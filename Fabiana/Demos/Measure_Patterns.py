@@ -15,12 +15,9 @@ optional will check if the columns selected is categorical (integers and strings
 if optional is not provided, then the program will assume that the column has integers values, therefore it will be considered categorical
 """
 
-<<<<<<< HEAD
+
 # Load dataset 
 data = np.loadtxt("uniform_large_d_1.tex")
-=======
-#load dataset 
-data = np.loadtxt("/Users/elleemortensen/Documents/GitHub/BP24/Ellee/gaussian_large_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -47,8 +44,10 @@ X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_t
 # Function Measure_Patterns begins here!
 def Measure_Patterns(X_train, y_train, optional=None):
     
-    
-    ### TO DO: Identify y_train type? Turn into categorical?
+    # Check if the data type is provided for columns
+    if optional is None:
+        print("Optional parameter not provided. Assuming integers values are categorical")
+        optional = {}
     
     # Splitting X_train into numerical subset 
     numerical_df = X_train.select_dtypes(include=['number'])
@@ -90,21 +89,22 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
 
 ##################### Correlation between columns (numerical) Code ############################
-    # takes the X_train data to find correlation between numerical columns
-    def num_corr(X_train):
-        matrix = X_train.corr(method='pearson')
-        print("Correlation Matrix: \n", matrix)
+    # Takes the X_train data to find correlation between NUMERICAL features
+    def num_corr(X_train_numerical):
+        matrix = X_train_numerical.corr(method='pearson')
+        print("---------------------------Correlation Matrix------------------------- \n", matrix)
      
     #Calls the function so the matrix prints out    
     num_corr(numerical_df)
     
 ##################### Chi-Square (F vs F) Code ################################################
     
-    # Finds dependency between all features in X_train
-    def chi_squared_fvf(X_train):
+    print("\n------------------Chi-Squared for Features v. Features-----------------------")
+    # Finds dependency between all CATEGORICAL features in X_train
+    def chi_squared_fvf(X_train_categorical):
         
         # Extract variable names
-        variable_names = list(X_train.columns)
+        variable_names = list(X_train_categorical.columns)
 
         # Initialize matrices to store chi-squared and p-values
         num_variables = len(variable_names)
@@ -112,9 +112,8 @@ def Measure_Patterns(X_train, y_train, optional=None):
         p_values = np.zeros((num_variables, num_variables))
 
         # Compute chi-squared and p-values for each pair of variables
-        print("Chi-Squared Statistics for Features v. Features")
         for i, j in combinations(range(num_variables), 2):
-            contingency_table = pd.crosstab(X_train.iloc[:, i], X_train.iloc[:, j])
+            contingency_table = pd.crosstab(X_train_categorical.iloc[:, i], X_train_categorical.iloc[:, j])
             
             # Compute chi-squared and p-values
             chi2 = stats.chi2_contingency(contingency_table)[0]
@@ -140,11 +139,12 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
 ##################### Chi-Square (F vs label column) Code ####################################
     
-    # Finds dependency between all features in X_train & the label in y_train
-    def chi_squared_fvl(X_train, y_train):
+    print("\n------------------------Chi-Square (F vs label column)------------------------")
+    # Finds dependency between all CATEGORICAL features in X_train & the label in y_train
+    def chi_squared_fvl(X_train_categorical, y_train):
         
-        # Combining X_train and y_train
-        df = X_train
+        # Combining CATEGORICAL X_train and y_train
+        df = X_train_categorical
         df['label'] = y_train
 
         # Number of features, excluding label
@@ -176,10 +176,9 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print(results_df.to_string(index=False))
     
     chi_squared_fvl(categorical_df, y_train)
-    
 ################################# KS Test ###########################################
-    print("\n-----------------------Kolmogorov Smirnov Test-------------------------------")
-    
+    print("\n---------------------Kolmogorov Smirnov Test--------------------------")
+
     # Subset to select only numerical variables columns --> KS Test only works with numerical
     # Subset to select only numerical variables columns --> KS Test only works with numerical
     df_KS = df_table.select_dtypes(include = ["float64"])
@@ -238,15 +237,11 @@ def Measure_Patterns(X_train, y_train, optional=None):
     print(results_df.to_string(index=False))
     
 ########################## Histogram/Graphing ###############################
-<<<<<<< HEAD
-# Load the Iris dataset
-#iris = load_iris()
-#data = iris.data[:, 0]  #Using sepal length as an example
-=======
+
+print("------------------------Histogram/Graphing-----------------------------")
 # Ensure data is 2D
 if data.ndim == 1:
     data = data.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
->>>>>>> 9b67a584c65e86c42c96d65a540a9424c0f7187c
 
 # Number of features (columns) in the dataset
 num_features = data.shape[1]
