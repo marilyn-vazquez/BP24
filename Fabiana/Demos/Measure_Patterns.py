@@ -44,8 +44,10 @@ X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_t
 # Function Measure_Patterns begins here!
 def Measure_Patterns(X_train, y_train, optional=None):
     
-    
-    ### TO DO: Identify y_train type? Turn into categorical?
+    # Check if the data type is provided for columns
+    if optional is None:
+        print("Optional parameter not provided. Assuming integers values are categorical")
+        optional = {}
     
     # Splitting X_train into numerical subset 
     numerical_df = X_train.select_dtypes(include=['number'])
@@ -236,6 +238,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
 ########################## Histogram/Graphing ###############################
 
+print("------------------------Histogram/Graphing-----------------------------")
 # Ensure data is 2D
 if data.ndim == 1:
     data = data.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
