@@ -89,9 +89,9 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
 
 ##################### Correlation between columns (numerical) Code ############################
-    # takes the X_train data to find correlation between numerical columns
-    def num_corr(X_train):
-        matrix = X_train.corr(method='pearson')
+    # Takes the X_train data to find correlation between NUMERICAL features
+    def num_corr(X_train_numerical):
+        matrix = X_train_numerical.corr(method='pearson')
         print("---------------------------Correlation Matrix------------------------- \n", matrix)
      
     #Calls the function so the matrix prints out    
@@ -100,11 +100,11 @@ def Measure_Patterns(X_train, y_train, optional=None):
 ##################### Chi-Square (F vs F) Code ################################################
     
     print("\n------------------Chi-Squared for Features v. Features-----------------------")
-    # Finds dependency between all features in X_train
-    def chi_squared_fvf(X_train):
+    # Finds dependency between all CATEGORICAL features in X_train
+    def chi_squared_fvf(X_train_categorical):
         
         # Extract variable names
-        variable_names = list(X_train.columns)
+        variable_names = list(X_train_categorical.columns)
 
         # Initialize matrices to store chi-squared and p-values
         num_variables = len(variable_names)
@@ -113,7 +113,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
         # Compute chi-squared and p-values for each pair of variables
         for i, j in combinations(range(num_variables), 2):
-            contingency_table = pd.crosstab(X_train.iloc[:, i], X_train.iloc[:, j])
+            contingency_table = pd.crosstab(X_train_categorical.iloc[:, i], X_train_categorical.iloc[:, j])
             
             # Compute chi-squared and p-values
             chi2 = stats.chi2_contingency(contingency_table)[0]
@@ -140,11 +140,11 @@ def Measure_Patterns(X_train, y_train, optional=None):
 ##################### Chi-Square (F vs label column) Code ####################################
     
     print("\n------------------------Chi-Square (F vs label column)------------------------")
-    # Finds dependency between all features in X_train & the label in y_train
-    def chi_squared_fvl(X_train, y_train):
+    # Finds dependency between all CATEGORICAL features in X_train & the label in y_train
+    def chi_squared_fvl(X_train_categorical, y_train):
         
-        # Combining X_train and y_train
-        df = X_train
+        # Combining CATEGORICAL X_train and y_train
+        df = X_train_categorical
         df['label'] = y_train
 
         # Number of features, excluding label
