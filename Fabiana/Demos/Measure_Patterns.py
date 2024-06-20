@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pdb
+import random
 import pandas as pd
 import numpy as np
 from collections import defaultdict
@@ -17,7 +18,7 @@ if optional is not provided, then the program will assume that the column has in
 
 
 # Load dataset 
-data = np.loadtxt("uniform_large_d_1.tex")
+data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/Gaussian - small distance/gaussian_small_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -41,20 +42,12 @@ df_table.iloc[:, 150] = df_table.iloc[:, 150].astype("category")
 X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,0:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
 
 
-#true if nums
-#false otherwise
-#[true false true]
-#num = data.iloc['']
-#cat = data.iloc['']
-
-
 # Function Measure_Patterns begins here!
 def Measure_Patterns(X_train, y_train, optional=None):
     
     # Check if the data type is provided for columns
     if optional is None:
         print("Optional parameter not provided. Assuming integers values are categorical")
-        optional = {}
     
         # Splitting X_train into numerical subset 
         print("\nNumerical DataFrame:")
@@ -64,9 +57,46 @@ def Measure_Patterns(X_train, y_train, optional=None):
         # Splitting X_train into categorical subset 
         print("Categorical DataFrame:")
         categorical_df = X_train.select_dtypes(exclude=['float64'])
+<<<<<<< HEAD
         print(categorical_df)
     
 
+=======
+    else:
+        # Create empty numerical & categorical data frames
+        numerical = []
+        numerical_colnames = []
+        categorical = []
+        categorical_colnames = []
+        
+        # Check that length of optional = # of columns in X_train
+        # Optional is the column type for X_train, so the lengths should be equal
+        if len(optional) == len(X_train.columns):
+            # For all the values in optional
+            for i in range(len(optional)):
+                if optional[i] == True:
+                    numerical.append(X_train.iloc[:,i])
+                    # TO DO: Save SPECIFIC column name in each loop, order matters
+                    # numerical_colnames.append()
+                else: 
+                    categorical.append(X_train.iloc[:,i])
+                    # TO DO: Save SPECIFIC column name in each loop, order matters
+                    # categorical_colnames.append()
+            # Turn transposed arrays into dataframes
+            numerical_df = pd.DataFrame(np.transpose(numerical))
+            categorical_df = pd.DataFrame(np.transpose(categorical))
+            # TO DO: Re-attach the column names to numerical_df & categorical_df 
+            
+            print("Numerical DF:")
+            print(numerical_df)
+            print("Categorical Df")
+            print(categorical_df)
+            
+        else:
+            print("The length of X_train and optional are different.")
+            
+           
+>>>>>>> 6d2ba247360668a368263a9acfa84da2b3751cd2
 
 ##################### Correlation between columns (numerical) Code ############################
     # Takes the X_train data to find correlation between NUMERICAL features
@@ -262,17 +292,10 @@ for feature_idx in range(num_features):
 
 ############################ KL Divergence ####################################
 
+optional_test = []
 
-
-
-
-
-
-
-
-
-
+for i in range(151):
+    optional_test.append(bool(random.getrandbits(1)))
 
 # Call the measure_patterns function
 Measure_Patterns(X_train, y_train)
-
