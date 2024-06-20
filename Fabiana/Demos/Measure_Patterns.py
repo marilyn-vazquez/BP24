@@ -15,8 +15,13 @@ optional will check if the columns selected is categorical (integers and strings
 if optional is not provided, then the program will assume that the column has integers values, therefore it will be considered categorical
 """
 
+<<<<<<< HEAD
 # Load dataset 
 data = np.loadtxt("uniform_large_d_1.tex")
+=======
+#load dataset 
+data = np.loadtxt("/Users/elleemortensen/Documents/GitHub/BP24/Ellee/gaussian_large_d_1.tex")
+>>>>>>> 9b67a584c65e86c42c96d65a540a9424c0f7187c
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -234,29 +239,54 @@ def Measure_Patterns(X_train, y_train, optional=None):
     print(results_df.to_string(index=False))
     
 ########################## Histogram/Graphing ###############################
+<<<<<<< HEAD
 # Load the Iris dataset
 #iris = load_iris()
 #data = iris.data[:, 0]  #Using sepal length as an example
+=======
+# Ensure data is 2D
+if data.ndim == 1:
+    data = data.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
+>>>>>>> 9b67a584c65e86c42c96d65a540a9424c0f7187c
 
-hist, bin_edges = np.histogram(data, bins = 10)
+# Number of features (columns) in the dataset
+num_features = data.shape[1]
 
-print("Bin Heights:", hist) #hist: Contains the counts of sepal lengths falling into each of the 10 bins.
-print("Bin Edges:", bin_edges) #bin_edges: Contains the boundaries of these 10 bins.
+# Loop through each feature
+for feature_idx in range(num_features):
+    # Extract the current feature data (column)
+    feature_data = data[:, feature_idx]
+
+    # Compute histogram with 10 bins
+    hist, bin_edges = np.histogram(feature_data, bins=10)
+
+    # Print feature number
+    print(f"Feature {feature_idx + 1}:")
     
-bin_heights = []
-bin_heights.extend(hist)
-print("Array with bin heights:", bin_heights)
+    # Print bin edges
+    print("Bin Edges:", bin_edges)
 
-bin_probs = []
-bin_probs.extend(hist)
-print("Array with bin probabilities:", bin_heights/(sum(bin_heights)))
+    # Store bin heights in a list
+    bin_heights = []
+    bin_heights.extend(hist)
+    print("Array with bin heights:", bin_heights)
 
-for i in range(len(hist)):
-    bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"
-    bin_probability = hist[i] / sum(hist)
-    print(f"Bin {i+1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
+    # Store bin probabilities in a list and normalize
+    bin_probs = []
+    bin_probs.extend(hist)
+    bin_probs = np.array(bin_probs) / sum(bin_heights)
+    print("Array with bin probabilities:", bin_probs)
 
-############################ KL Diverge ####################################
+    # Loop through each bin to print range and probabilities
+    for i in range(len(hist)):
+        bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"  # Bin range
+        bin_probability = hist[i] / sum(hist)  # Bin probability
+        print(f"Bin {i + 1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
+
+    # Separator between features for clarity
+    print("\n" + "="*50 + "\n")
+
+############################ KL Divergence ####################################
 
 
 
