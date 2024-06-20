@@ -48,7 +48,6 @@ def Measure_Patterns(X_train, y_train, optional=None):
     # Check if the data type is provided for columns
     if optional is None:
         print("Optional parameter not provided. Assuming integers values are categorical")
-        optional = {}
     
         # Splitting X_train into numerical subset 
         numerical_df = X_train.select_dtypes(include = ["float64"])
@@ -56,14 +55,30 @@ def Measure_Patterns(X_train, y_train, optional=None):
         # Splitting X_train into categorical subset 
         categorical_df = X_train.select_dtypes(exclude=['float64'])
     else:
-        # Check that optional length = # of columns in xtrain
+        # Create empty numerical & categorical data frames
+        numerical = []
+        numerical_colnames = []
+        categorical = []
+        categorical_colnames = []
+        
+        # Check that length of optional = # of columns in X_train
+        # Optional is the column type for X_train, so the lengths should be equal
         if len(optional) == len(X_train.columns):
             # For all the values in optional
-            for i in range(len(X_train)):
+            for i in range(len(optional)):
                 if optional[i] == True:
-                    numerical_df[i] = X_train.iloc[i]
+                    numerical.append(X_train.iloc[:,i])
+                    # TO DO: Save SPECIFIC column name in each loop, order matters
+                    # numerical_colnames.append()
                 else: 
-                    categorical_df[i] = X_train.iloc[i]
+                    categorical.append(X_train.iloc[:,i])
+                    # TO DO: Save SPECIFIC column name in each loop, order matters
+                    # categorical_colnames.append()
+            # Turn transposed arrays into dataframes
+            numerical_df = pd.DataFrame(np.transpose(numerical))
+            categorical_df = pd.DataFrame(np.transpose(categorical))
+            # TO DO: Re-attach the column names to numerical_df & categorical_df 
+            
             print("Numerical DF:")
             print(numerical_df)
             print("Categorical Df")
@@ -71,6 +86,8 @@ def Measure_Patterns(X_train, y_train, optional=None):
             
         else:
             print("The length of X_train and optional are different.")
+            
+           
 
 ##################### Correlation between columns (numerical) Code ############################
     # Takes the X_train data to find correlation between NUMERICAL features
