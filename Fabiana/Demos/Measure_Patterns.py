@@ -38,7 +38,7 @@ df_table.iloc[:, 150] = df_table.iloc[:, 150].astype("category")
 
 
 # Split dataset into X_train and y_train
-X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
+X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,0:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
 
 
 #true if nums
@@ -57,42 +57,15 @@ def Measure_Patterns(X_train, y_train, optional=None):
         optional = {}
     
         # Splitting X_train into numerical subset 
+        print("\nNumerical DataFrame:")
         numerical_df = X_train.select_dtypes(include = ["float64"])
+        print(numerical_df)
 
         # Splitting X_train into categorical subset 
+        print("Categorical DataFrame:")
         categorical_df = X_train.select_dtypes(exclude=['float64'])
+        print(categorical_df)
     
-    # Check if the data type is provided for columns
-    #if optional is None:
-        #print("Optional parameter not provided. Assuming integers values are categorical")
-        #optional = {}
-    
-    # Classify columns based on their data type
-    #def classify_columns(column):
-        #if np.issubdtype(column.dtype, np.number):
-            #if column.dtype == "float":
-                #return "numerical"
-            #else:
-                #return "categorical"
-        #else:
-            #return "categorical"
-    
-    # Default factory function which returns 'categorical' for any key not found in 'optional'
-    #column_types = defaultdict(lambda: "categorical", {col: classify_columns(X_train[col]) for col in X_train.columns})
-
-    # Update column_types with any specific types from the optional dictionary
-    #column_types.update(optional)
-    
-    # Create a list to store column information
-    #columns_info = [{'Column': col, 'Type': column_types[col]} for col in X_train.columns]
-    
-    # Create a DataFrame from the columns information
-    #columns_info_df = pd.DataFrame(columns_info)
-    
-    # Print the DataFrame
-    #print(columns_info_df)
-
-
 
 
 ##################### Correlation between columns (numerical) Code ############################
