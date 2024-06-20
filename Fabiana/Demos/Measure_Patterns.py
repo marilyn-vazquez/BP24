@@ -15,8 +15,8 @@ optional will check if the columns selected is categorical (integers and strings
 if optional is not provided, then the program will assume that the column has integers values, therefore it will be considered categorical
 """
 
-#load dataset 
-data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/Uniform - large distance/uniform_large_d_1.tex")
+# Load dataset 
+data = np.loadtxt("uniform_large_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -26,10 +26,17 @@ print(df_table)
 
 
 
+# From the dataset, change 25 columns to 'categorical'
+#Loop, converts floats to ints and then those ints to category
+for i in range(26):
+    df_table.iloc[:,i] = df_table.iloc[:,i].astype(int)
+    df_table.iloc[:,i] = df_table.iloc[:,i].astype("category")
+df_table.iloc[:, 150] = df_table.iloc[:, 150].astype("category")
+
+
 
 # Split dataset into X_train and y_train
 X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
-
 
 
 
@@ -168,8 +175,14 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
 ################################# KS Test ###########################################
     print("\n-----------------------Kolmogorov Smirnov Test-------------------------------")
+    
     # Subset to select only numerical variables columns --> KS Test only works with numerical
-    df_KS = numerical_df
+    # Subset to select only numerical variables columns --> KS Test only works with numerical
+    df_KS = df_table.select_dtypes(include = ["float64"])
+    # Add label column to new KS dataset to compare Feature to Label
+    label_column = df_table.iloc[:, -1]
+    df_KS['label_column'] = label_column
+    df_KS.head()
 
     def standardize(sample):
         return (sample - np.mean(sample)) / np.std(sample)
@@ -222,8 +235,8 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
 ########################## Histogram/Graphing ###############################
 # Load the Iris dataset
-iris = load_iris()
-data = iris.data[:, 0]  #Using sepal length as an example
+#iris = load_iris()
+#data = iris.data[:, 0]  #Using sepal length as an example
 
 hist, bin_edges = np.histogram(data, bins = 10)
 
