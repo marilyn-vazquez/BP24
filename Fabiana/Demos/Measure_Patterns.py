@@ -57,11 +57,9 @@ def Measure_Patterns(X_train, y_train, optional=None):
         # Splitting X_train into categorical subset 
         print("Categorical DataFrame:")
         categorical_df = X_train.select_dtypes(exclude=['float64'])
-<<<<<<< HEAD
         print(categorical_df)
     
 
-=======
     else:
         # Create empty numerical & categorical data frames
         numerical = []
@@ -96,7 +94,6 @@ def Measure_Patterns(X_train, y_train, optional=None):
             print("The length of X_train and optional are different.")
             
            
->>>>>>> 6d2ba247360668a368263a9acfa84da2b3751cd2
 
 ##################### Correlation between columns (numerical) Code ############################
     # Takes the X_train data to find correlation between NUMERICAL features
