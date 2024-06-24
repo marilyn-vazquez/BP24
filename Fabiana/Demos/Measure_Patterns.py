@@ -210,12 +210,10 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print(results_df.to_string(index=False))
         
     chi_squared_fvl(categorical_df, y_train)
-<<<<<<< HEAD
     
     
-=======
 
->>>>>>> cd8e7d332e91507f0f9f8059199921aba5b99599
+
 ################################# KS Test ###########################################
     #KS test code is designed to check whether each numerical column in your DataFrame follows a normal distribution. 
     print("\n---------------------Kolmogorov Smirnov Test--------------------------")
