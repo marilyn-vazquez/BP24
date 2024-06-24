@@ -30,7 +30,7 @@ print(df_table)
 
 # From the dataset, change 25 columns to 'categorical'
 #Loop, converts floats to ints and then those ints to category
-for i in range(26):
+for i in range(25):
     df_table.iloc[:,i] = df_table.iloc[:,i].round()
     df_table.iloc[:,i] = df_table.iloc[:,i].astype(int)
     df_table.iloc[:,i] = df_table.iloc[:,i].astype("category")
