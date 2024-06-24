@@ -111,82 +111,105 @@ def Measure_Patterns(X_train, y_train, optional=None):
 ##################### Chi-Square (F vs F) Code ################################################
     
     print("\n------------------Chi-Squared for Features v. Features-----------------------")
-    # Finds dependency between all CATEGORICAL features in X_train
-    def chi_squared_fvf(X_train_categorical):
-        
+    # Finds dependency between all features in X_train
+    def chi_squared_fvf(X_train):
+            
         # Extract variable names
-        variable_names = list(X_train_categorical.columns)
-
+        variable_names = list(X_train.columns)
+    
         # Initialize matrices to store chi-squared and p-values
         num_variables = len(variable_names)
         chi_squared = np.zeros((num_variables, num_variables))
         p_values = np.zeros((num_variables, num_variables))
-
+    
+        # Creates an empty boolean array for contingency table cells <5
+        below_5 = []
+    
         # Compute chi-squared and p-values for each pair of variables
         for i, j in combinations(range(num_variables), 2):
-            contingency_table = pd.crosstab(X_train_categorical.iloc[:, i], X_train_categorical.iloc[:, j])
+            
+            # Creates contigency table of feature i v. feature j
+            contingency_table = pd.crosstab(X_train.iloc[:, i], X_train.iloc[:, j])
+            
+            # Check if any cell in the contingency table is below 5 & appends
+            below_5.append((contingency_table < 5).any().any())
             
             # Compute chi-squared and p-values
             chi2 = stats.chi2_contingency(contingency_table)[0]
             p = stats.chi2_contingency(contingency_table)[1]
-            
+                
             # Assign results to chi_squared and p_values matrices
             chi_squared[i, j] = chi2
             chi_squared[j, i] = chi2  # Assign to symmetric position in the matrix
             p_values[i, j] = p
             p_values[j, i] = p  # Assign to symmetric position in the matrix
-
+    
         # Create a DataFrame with variable names as index and columns
         chi_squared_df = pd.DataFrame(chi_squared, index=variable_names, columns=variable_names)
         p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
-
+    
+        # Print warning if any cells are below 5
+        if any(below_5):
+            print("WARNING: The validity of this chi-squared test may be violated as there are \n         cells below 5 in at least one contingency table of observed values.") 
+        
         # Printing the matrix-like output with variable names
         print("Chi-Squared Values:")
         print(chi_squared_df)
         print("\nP-Values:")
         print(p_values_df)
-    
+        
     chi_squared_fvf(categorical_df)
     
 ##################### Chi-Square (F vs label column) Code ####################################
     
     print("\n------------------------Chi-Square (F vs label column)------------------------")
-    # Finds dependency between all CATEGORICAL features in X_train & the label in y_train
-    def chi_squared_fvl(X_train_categorical, y_train):
-        
-        # Combining CATEGORICAL X_train and y_train
-        df = X_train_categorical
+    # Finds dependency between all features in X_train & the label in y_train
+    def chi_squared_fvl(X_train, y_train):
+            
+        # Combining X_train and y_train
+        df = X_train
         df['label'] = y_train
-
+    
         # Number of features, excluding label
         var_count = len(df.columns)-1
-
-        # Creates an empty array to print values in a table
+    
+        # Creates an empty array for Chi2 and P-values
         results = []
-
+    
+        # Creates an empty boolean array for contingency table cells <5
+        below_5 = []
+    
         for i in range(0, var_count):
-
+    
             # Create contigency table of all features v. label
-            crosstab = pd.crosstab(df.iloc[:, i], df.iloc[:,-1])
+            contingency_table = pd.crosstab(df.iloc[:, i], df.iloc[:,-1])
             
+            # Check if any cell in the contingency table is below 5 & appends
+            below_5.append((contingency_table < 5).any().any())
+                
             # Compute chi-squared and p-values
-            chi2 = stats.chi2_contingency(crosstab)[0]
-            p = stats.chi2_contingency(crosstab)[1]
-            
+            chi2 = stats.chi2_contingency(contingency_table)[0]
+            p = stats.chi2_contingency(contingency_table)[1]
+                
             # Append results to the list
             results.append({
                 "Feature": df.columns[i],
                 "Chi Squared Statistic": chi2,
                 "P-Value": p})
-
-        # Create a DataFrame from the results
+    
+        # Create a dataFrame from the results
         results_df = pd.DataFrame(results)
-
-        # Print the DataFrame
+    
+        # Print warning if any cells are below 5
+        if any(below_5):
+            print("WARNING: The validity of this chi-squared test may be violated as there are \n         cells below 5 in your contingency table of observed values.") 
+        
+        # Print the dataFrame
         print("Label:", df.columns.values[-1])
         print(results_df.to_string(index=False))
-    
+        
     chi_squared_fvl(categorical_df, y_train)
+
 ################################# KS Test ###########################################
     print("\n---------------------Kolmogorov Smirnov Test--------------------------")
 
