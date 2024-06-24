@@ -67,18 +67,22 @@ def Measure_Patterns(X_train, y_train, optional=None):
             # For all the values in optional
             for i in range(len(optional)):
                 if optional[i] == True:
+                    # Save numerical column in numerical list
                     numerical.append(X_train.iloc[:,i])
-                    # TO DO: Save SPECIFIC column name in each loop, order matters
-                    # numerical_colnames.append()
+                    # Save numerical column name
+                    numerical_colnames.append(X_train.columns[i]) 
                 else: 
+                    # Save categorical column in numerical list
                     categorical.append(X_train.iloc[:,i])
-                    # TO DO: Save SPECIFIC column name in each loop, order matters
-                    # categorical_colnames.append()
+                    # Save categorical column name
+                    categorical_colnames.append(X_train.columns[i])
             # Turn transposed arrays into dataframes
             numerical_df = pd.DataFrame(np.transpose(numerical))
             categorical_df = pd.DataFrame(np.transpose(categorical))
-            # TO DO: Re-attach the column names to numerical_df & categorical_df 
-            
+            # Re-attach the column names to numerical_df & categorical_df 
+            numerical_df.columns = numerical_colnames
+            categorical_df.columns = categorical_colnames
+
             print("Numerical DF:")
             print(numerical_df)
             print("Categorical Df")
@@ -87,7 +91,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
         else:
             print("The length of X_train and optional are different.")
             
-           
+     
 
 ##################### Correlation between columns (numerical) Code ############################
     # Takes the X_train data to find correlation between NUMERICAL features
