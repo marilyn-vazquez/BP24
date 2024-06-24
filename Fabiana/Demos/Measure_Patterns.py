@@ -18,7 +18,7 @@ if optional is not provided, then the program will assume that the column has in
 
 
 # Load dataset 
-data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/Gaussian - small distance/gaussian_small_d_1.tex")
+data = np.loadtxt("uniform_small_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -31,6 +31,7 @@ print(df_table)
 # From the dataset, change 25 columns to 'categorical'
 #Loop, converts floats to ints and then those ints to category
 for i in range(26):
+    df_table.iloc[:,i] = df_table.iloc[:,i].round()
     df_table.iloc[:,i] = df_table.iloc[:,i].astype(int)
     df_table.iloc[:,i] = df_table.iloc[:,i].astype("category")
 df_table.iloc[:, 150] = df_table.iloc[:, 150].astype("category")
@@ -183,10 +184,13 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print(results_df.to_string(index=False))
     
     chi_squared_fvl(categorical_df, y_train)
+    
+    
 ################################# KS Test ###########################################
+    #KS test code is designed to check whether each numerical column in your DataFrame follows a normal distribution. 
     print("\n---------------------Kolmogorov Smirnov Test--------------------------")
+    print("\nREMINDER--> the K-S test is less sensitive in the tails than the middle of the distribution\n")
 
-    # Subset to select only numerical variables columns --> KS Test only works with numerical
     # Subset to select only numerical variables columns --> KS Test only works with numerical
     df_KS = df_table.select_dtypes(include = ["float64"])
     # Add label column to new KS dataset to compare Feature to Label
@@ -194,9 +198,11 @@ def Measure_Patterns(X_train, y_train, optional=None):
     df_KS['label_column'] = label_column
     df_KS.head()
 
+    # Transforms data to have a mean of 0 and a standard deviation of 1
     def standardize(sample):
         return (sample - np.mean(sample)) / np.std(sample)
-
+    
+    # Standardized sample is passed to this function which uses 'stats.kstest' with 'norm' as the reference distribution
     def ks_test(sample):
         # Sort the sample
         sample_sorted = np.sort(sample)
@@ -206,7 +212,8 @@ def Measure_Patterns(X_train, y_train, optional=None):
         cdf = stats.norm.cdf(sample_sorted)
         # Calculate the KS statistic
         ks_stat = np.max(np.abs(ecdf - cdf))
-        # Calculate the p-value
+        # Calculate the p-value. 
+        # 'norm' indicates that the reference distribution is the normal distribution
         p_value = stats.kstest(sample_sorted, 'norm').pvalue
         return ks_stat, p_value
     
@@ -217,15 +224,15 @@ def Measure_Patterns(X_train, y_train, optional=None):
     results = [] 
 
     for i in range(0, var_count):
-        # Select one feature from the dataset (Example: assuming the first column is numeric)
-        sample = df_KS.iloc[:, i]  # Change the column index as needed
+        # Select features from the dataset 
+        sample = df_KS.iloc[:, i] 
         # Standardize the sample
         standardized_sample = standardize(sample)
         # Perform the KS test on standardize sample
         ks_stat, p_value = ks_test(standardized_sample)
-        # Determine if we reject or fail to reject the null hypothesis
-        # If sample does not come from a normal distribution ---> reject H0
-        # If sample comes from a normal distribution ---> fail to reject H0
+        # Based on the p-value from the KS test, the code determines if the sample distribution can be considered normally distributed
+        # If p-value is LESS than 0.05 (it is not a normal distribution) ---> reject H0
+        # If p-value is GREATER than 0.05 then (it is a normal distribution) ---> fail to reject H0
         normal_dist = p_value > 0.05
         hypothesis_result = "Fail to reject H0" if normal_dist else "Reject H0"
 
@@ -242,6 +249,10 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
     # Print the DataFrame
     print(results_df.to_string(index=False))
+    
+    
+    
+    
     
 ########################## Histogram/Graphing ###############################
 
