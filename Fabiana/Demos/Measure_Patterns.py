@@ -18,7 +18,7 @@ if optional is not provided, then the program will assume that the column has in
 
 
 # Load dataset 
-data = np.loadtxt("uniform_small_d_1.tex")
+data = np.loadtxt("uniform_large_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
