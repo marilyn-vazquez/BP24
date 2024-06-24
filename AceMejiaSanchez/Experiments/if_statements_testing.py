@@ -22,8 +22,7 @@ data = np.loadtxt("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Data Creation/G
 array = np.array(data)
 # Converting to Pandas DataFrame
 df_table = pd.DataFrame(array)
-# Displaying the table
-print(df_table)
+
 
 
 
@@ -33,8 +32,6 @@ for i in range(26):
     df_table.iloc[:,i] = df_table.iloc[:,i].astype(int)
     df_table.iloc[:,i] = df_table.iloc[:,i].astype("category")
 df_table.iloc[:, 150] = df_table.iloc[:, 150].astype("category")
-
-
 
 
 # Split dataset into X_train and y_train
@@ -66,18 +63,22 @@ def Measure_Patterns(X_train, y_train, optional=None):
             # For all the values in optional
             for i in range(len(optional)):
                 if optional[i] == True:
+                    # Save numerical column in numerical list
                     numerical.append(X_train.iloc[:,i])
-                    # TO DO: Save SPECIFIC column name in each loop, order matters
-                    # numerical_colnames.append()
+                    # Save numerical column name
+                    numerical_colnames.append(X_train.columns[i]) 
                 else: 
+                    # Save categorical column in numerical list
                     categorical.append(X_train.iloc[:,i])
-                    # TO DO: Save SPECIFIC column name in each loop, order matters
-                    # categorical_colnames.append()
+                    # Save categorical column name
+                    categorical_colnames.append(X_train.columns[i])
             # Turn transposed arrays into dataframes
             numerical_df = pd.DataFrame(np.transpose(numerical))
             categorical_df = pd.DataFrame(np.transpose(categorical))
-            # TO DO: Re-attach the column names to numerical_df & categorical_df 
-           
+            # Re-attach the column names to numerical_df & categorical_df 
+            numerical_df.columns = numerical_colnames
+            categorical_df.columns = categorical_colnames
+
             print("Numerical DF:")
             print(numerical_df)
             print("Categorical Df")
@@ -86,6 +87,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
         else:
             print("The length of X_train and optional are different.")
             
+           
             
 #####################################################################
 
@@ -110,3 +112,5 @@ X_train, X_test, y_train, y_test = train_test_split(iris_df.iloc[:,0:4], iris_df
 
 # Call the measure_patterns function
 Measure_Patterns(X_train, y_train, optional=optional_test)
+
+
