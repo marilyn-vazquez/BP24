@@ -39,7 +39,7 @@ df_table.iloc[:, 150] = df_table.iloc[:, 150].astype("category")
 
 
 # Split dataset into X_train and y_train
-X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,1:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
+X_train, X_test, y_train, y_test = train_test_split(df_table.iloc[:,0:150], df_table.iloc[:,-1], test_size=0.2, random_state=52)
 
 
 # Function Measure_Patterns begins here!
@@ -50,10 +50,16 @@ def Measure_Patterns(X_train, y_train, optional=None):
         print("Optional parameter not provided. Assuming integers values are categorical")
     
         # Splitting X_train into numerical subset 
+        print("\nNumerical DataFrame:")
         numerical_df = X_train.select_dtypes(include = ["float64"])
+        print(numerical_df)
 
         # Splitting X_train into categorical subset 
+        print("Categorical DataFrame:")
         categorical_df = X_train.select_dtypes(exclude=['float64'])
+        print(categorical_df)
+    
+
     else:
         # Create empty numerical & categorical data frames
         numerical = []
