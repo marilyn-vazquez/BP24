@@ -282,13 +282,13 @@ def runClassifier(X_train, Y_train, X_test, Y_test, classifier):
     # Accuracy
     acc = skm.accuracy_score(Y_test, predicted_values)
     mae_accuracy = skm.mean_absolute_error(Y_test, predicted_values)
-    rmse_accuracy = skm.root_mean_squared_error(Y_test, predicted_values)
+    #rmse_accuracy = skm.root_mean_squared_error(Y_test, predicted_values)
     f1_accuracy = skm.f1_score(Y_test, predicted_values)
 
     # Appends accuracies to accuracy table
     results_df.loc[1, 'Accuracy'] = acc
     results_df.loc[1, 'Mean Absolute Error'] = mae_accuracy
-    results_df.loc[1, 'Rooted Mean Square Error'] = rmse_accuracy
+    #results_df.loc[1, 'Rooted Mean Square Error'] = rmse_accuracy
     results_df.loc[1, 'F1 Score'] = f1_accuracy
 
     return results_df
