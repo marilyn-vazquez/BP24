@@ -18,7 +18,7 @@ if optional is not provided, then the program will assume that the column has in
 
 
 # Load dataset 
-data = np.loadtxt("uniform_large_d_1.tex")
+data = np.loadtxt("C:/Users/kateh/OneDrive/Documents/GitHub/BP24/Kate/Data/uniform_small_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -285,20 +285,31 @@ def Measure_Patterns(X_train, y_train, optional=None):
 ########################## Histogram/Graphing ###############################
 
 print("------------------------Histogram/Graphing-----------------------------")
+
+
+###### These are just here for now so the histogram and bar graph functions work
+# Splitting X_train into numerical subset 
+numerical_df = X_train.select_dtypes(include = ["float64"])
+
+# Splitting X_train into categorical subset 
+categorical_df = X_train.select_dtypes(exclude=['float64'])
+        
+
 # Ensure data is 2D
-if data.ndim == 1:
-    data = data.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
+if numerical_df.ndim == 1:
+    numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
 
 # Number of features (columns) in the dataset
-num_features = data.shape[1]
+numerical_num_features = numerical_df.shape[1]
 
-# Loop through each feature
-for feature_idx in range(num_features):
+
+# Loop through each numerical feature
+for feature_idx in range(numerical_num_features):
     # Extract the current feature data (column)
-    feature_data = data[:, feature_idx]
+    feature_df = numerical_df.iloc[:, feature_idx]
 
     # Compute histogram with 10 bins
-    hist, bin_edges = np.histogram(feature_data, bins=10)
+    hist, bin_edges = np.histogram(feature_df, bins=10)
 
     # Print feature number
     print(f"Feature {feature_idx + 1}:")
@@ -325,6 +336,15 @@ for feature_idx in range(num_features):
 
     # Separator between features for clarity
     print("\n" + "="*50 + "\n")
+
+# Calculate and store probabilities for each categorical column
+print("Proportions for Label for Categorical Columns:")
+
+for column in categorical_df.columns:
+    value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
+    # print(f"Probabilities for Categorical Column {column}:")
+    print(value_counts)
+    print()  # Add an empty line for separation    
 
 ############################ KL Divergence ####################################
 
