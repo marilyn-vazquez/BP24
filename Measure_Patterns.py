@@ -219,10 +219,10 @@ def Measure_Patterns(X_train, y_train, optional=None):
     from scipy.stats import anderson
 
     # Subset to select only numerical variables columns --> A-D Test only works with numerical
-    df_DA = X_train.select_dtypes(include = ["float64"])
+    df_AD = X_train.select_dtypes(include = ["float64"])
 
     # Get the actual column indices for the numerical columns
-    numerical_column_indices = [X_train.columns.get_loc(col) for col in df_DA.columns]
+    numerical_column_indices = [X_train.columns.get_loc(col) for col in df_AD.columns]
 
     # Initialize a list to store results
     results = []
@@ -231,9 +231,9 @@ def Measure_Patterns(X_train, y_train, optional=None):
     significance_level_index = 2  # Index for 5% significance level in the Anderson-Darling test
 
     # Iterate through each row
-    for col_index, column in zip(numerical_column_indices, df_DA.columns):
+    for col_index, column in zip(numerical_column_indices, df_AD.columns):
         # Convert columns to a numpy array
-        data = df_DA[column].values
+        data = df_AD[column].values
 
         # Perform the Anderson-Darling Test
         result = anderson(data)
