@@ -213,56 +213,6 @@ def Measure_Patterns(X_train, y_train, optional=None):
     chi_squared_fvl(categorical_df, y_train)
     
     
-    ############################# Anderson-Darling Test ##########################
-    # tests if a sample comes from a population with a specific distribution
-    # used to determine whether or not your data follow a normal distribution
-    from scipy.stats import anderson
-
-    # Subset to select only numerical variables columns --> A-D Test only works with numerical
-    df_AD = X_train.select_dtypes(include = ["float64"])
-
-    # Get the actual column indices for the numerical columns
-    numerical_column_indices = [X_train.columns.get_loc(col) for col in df_AD.columns]
-
-    # Initialize a list to store results
-    results = []
-
-    # Significance level for the normality test (usually 0.05)
-    significance_level_index = 2  # Index for 5% significance level in the Anderson-Darling test
-
-    # Iterate through each row
-    for col_index, column in zip(numerical_column_indices, df_AD.columns):
-        # Convert columns to a numpy array
-        data = df_AD[column].values
-
-        # Perform the Anderson-Darling Test
-        result = anderson(data)
-
-        # Determine if the distribution is normal at the 5% significance level
-        is_normal = result.statistic < result.critical_values[significance_level_index]
-
-        #H0:  the data are normally distributed, 
-        #Ha:  the data are not normally distributed. 
-        # Formulate the hypothesis result
-        hypothesis = "H0: Fail to reject" if is_normal else "Ha: Reject"
-    
-        # Store the results
-        results.append({
-            'feature': col_index,
-            'statistic': result.statistic,
-            'critical_values': result.critical_values,
-            'significance_level': result.significance_level,
-            'normal_dist': is_normal,
-            'hypothesis': hypothesis
-            })
-
-    # Convert results to a DataFrame for better readability
-    results_df = pd.DataFrame(results)
-
-    # Display the results
-    print("---------------------------------------- Anderson-Darling Test Results ---------------------------------------------")
-    print(results_df.to_string())
-    
     
 ########################## Histogram/Graphing ###############################
 
