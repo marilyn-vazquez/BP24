@@ -239,6 +239,49 @@ def Measure_Patterns(X_train, y_train, optional=None):
     print("ANOVA Results:")
     print(formatted_results)
     
+    
+    
+
+
+
+############################# ANOVA (Feature vs Label) THIS IS PENDING #########################################
+    print("\n------------------ ANOVA (Feature vs Label) -----------------------")
+    # Concatenate X_train and y_train into a single DataFrame for ANOVA comparison
+    data = pd.concat([X_train, y_train], axis=1)
+
+    # Automatically detect all columns as features (numerical and categorical)
+    all_columns = data.columns
+
+    # Identify the last column as the target column
+    target_column = all_columns[-1]
+
+    # Initialize an empty DataFrame to store ANOVA results
+    anova_results = pd.DataFrame(index=[target_column], columns=all_columns)
+
+    # Perform ANOVA for each feature column against the target column
+    for feature_col in all_columns:
+        if feature_col == target_column:
+            continue  # Skip the target column itself
+            groups = [data[feature_col][data[target_column] == value] for value in data[target_column].unique()]
+            f_statistic, p_value = f_oneway(*groups)
+            anova_results.loc[target_column, feature_col] = f"F = {f_statistic:.2f}, p = {p_value:.4f}"
+
+    # Print ANOVA results for each feature with significance indication
+    print("ANOVA Results:")
+    for feature_col in anova_results.columns[:-1]:  # Exclude the last column (target column)
+        result = anova_results.loc[target_column, feature_col]
+        f_statistic, p_value = result.split(', ')
+        f_statistic = float(f_statistic.split(' = ')[1])
+        p_value = float(p_value.split(' = ')[1])
+    
+        if p_value < 0.05:
+            significance = "Significant"
+        else:
+            significance = "Not Significant"
+    
+        print(f"{feature_col}: {result} ({significance})")
+        
+        
 ########################## Histogram/Graphing ###############################
 
 print("------------------------Histogram/Graphing-----------------------------")
