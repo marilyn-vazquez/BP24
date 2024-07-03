@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from scipy import stats
 from itertools import combinations
 from sklearn.datasets import load_iris
+from scipy.stats import anderson
 
 """
 The function Measure_Patterns has 3 parameters: X_train, y_train, optional
@@ -18,7 +19,7 @@ if optional is not provided, then the program will assume that the column has in
 
 
 # Load dataset 
-data = np.loadtxt("C:/Users/kateh/OneDrive/Documents/GitHub/BP24/Kate/Data/uniform_small_d_1.tex")
+data = np.loadtxt("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Demos Fabi/uniform_large_d_1.tex")
 # Creating NumPy array
 array = np.array(data)
 # Converting to Pandas DataFrame
@@ -212,74 +213,55 @@ def Measure_Patterns(X_train, y_train, optional=None):
     chi_squared_fvl(categorical_df, y_train)
     
     
+    ############################# Anderson-Darling Test ##########################
+    # tests if a sample comes from a population with a specific distribution
+    # used to determine whether or not your data follow a normal distribution
+    from scipy.stats import anderson
 
+    # Subset to select only numerical variables columns --> A-D Test only works with numerical
+    df_AD = X_train.select_dtypes(include = ["float64"])
 
-################################# KS Test ###########################################
-    #KS test code is designed to check whether each numerical column in your DataFrame follows a normal distribution. 
-    print("\n---------------------Kolmogorov Smirnov Test--------------------------")
-    print("\nREMINDER--> the K-S test is less sensitive in the tails than the middle of the distribution\n")
+    # Get the actual column indices for the numerical columns
+    numerical_column_indices = [X_train.columns.get_loc(col) for col in df_AD.columns]
 
-    # Subset to select only numerical variables columns --> KS Test only works with numerical
-    df_KS = df_table.select_dtypes(include = ["float64"])
-    # Add label column to new KS dataset to compare Feature to Label
-    label_column = df_table.iloc[:, -1]
-    df_KS['label_column'] = label_column
-    df_KS.head()
+    # Initialize a list to store results
+    results = []
 
-    # Transforms data to have a mean of 0 and a standard deviation of 1
-    def standardize(sample):
-        return (sample - np.mean(sample)) / np.std(sample)
+    # Significance level for the normality test (usually 0.05)
+    significance_level_index = 2  # Index for 5% significance level in the Anderson-Darling test
+
+    # Iterate through each row
+    for col_index, column in zip(numerical_column_indices, df_AD.columns):
+        # Convert columns to a numpy array
+        data = df_AD[column].values
+
+        # Perform the Anderson-Darling Test
+        result = anderson(data)
+
+        # Determine if the distribution is normal at the 5% significance level
+        is_normal = result.statistic < result.critical_values[significance_level_index]
+
+        #H0:  the data are normally distributed, 
+        #Ha:  the data are not normally distributed. 
+        # Formulate the hypothesis result
+        hypothesis = "H0: Fail to reject" if is_normal else "Ha: Reject"
     
-    # Standardized sample is passed to this function which uses 'stats.kstest' with 'norm' as the reference distribution
-    def ks_test(sample):
-        # Sort the sample
-        sample_sorted = np.sort(sample)
-        # Evaluate the empirical CDF (ECDF)
-        ecdf = np.arange(1, len(sample_sorted)+1) / len(sample_sorted)
-        # Evaluate the theoretical CDF
-        cdf = stats.norm.cdf(sample_sorted)
-        # Calculate the KS statistic
-        ks_stat = np.max(np.abs(ecdf - cdf))
-        # Calculate the p-value. 
-        # 'norm' indicates that the reference distribution is the normal distribution
-        p_value = stats.kstest(sample_sorted, 'norm').pvalue
-        return ks_stat, p_value
-    
-    # Temporary KS Test
-    var_count = len(df_KS.columns)-1
-
-    #creates an empty array to print values in a table
-    results = [] 
-
-    for i in range(0, var_count):
-        # Select features from the dataset 
-        sample = df_KS.iloc[:, i] 
-        # Standardize the sample
-        standardized_sample = standardize(sample)
-        # Perform the KS test on standardize sample
-        ks_stat, p_value = ks_test(standardized_sample)
-        # Based on the p-value from the KS test, the code determines if the sample distribution can be considered normally distributed
-        # If p-value is LESS than 0.05 (it is not a normal distribution) ---> reject H0
-        # If p-value is GREATER than 0.05 then (it is a normal distribution) ---> fail to reject H0
-        normal_dist = p_value > 0.05
-        hypothesis_result = "Fail to reject H0" if normal_dist else "Reject H0"
-
-        # Append results to the list
+        # Store the results
         results.append({
-            "Feature": df_KS.columns[i],
-            "KS Statistic": f"{ks_stat:.4f}",
-            "P-Value": f"{p_value:.3e}",
-            "Normal Distribution": normal_dist,
-            "Hypothesis Result": hypothesis_result})
-    
-    # Create a DataFrame from the results
+            'feature': col_index,
+            'statistic': result.statistic,
+            'critical_values': result.critical_values,
+            'significance_level': result.significance_level,
+            'normal_dist': is_normal,
+            'hypothesis': hypothesis
+            })
+
+    # Convert results to a DataFrame for better readability
     results_df = pd.DataFrame(results)
 
-    # Print the DataFrame
-    print(results_df.to_string(index=False))
-    
-    
-    
+    # Display the results
+    print("---------------------------------------- Anderson-Darling Test Results ---------------------------------------------")
+    print(results_df.to_string())
     
     
 ########################## Histogram/Graphing ###############################
