@@ -214,33 +214,41 @@ def MeasurePatterns(X_train, y_train, optional=None):
     chi_squared_fvl(categorical_df, y_train)
     
 ############################# ANOVA (Feature vs Feature) ######################
-#################################### NEED TO FIX ##############################
-    print("\n------------------ ANOVA (Feature vs Feature) -----------------------")
-    # Initialize an empty DataFrame to store ANOVA results
-    anova_results = pd.DataFrame(index=categorical_df.columns, columns=numerical_df.columns)
-
-    # Perform ANOVA for each combination of categorical and numerical columns
-    for cat_col in categorical_df:
-        for num_col in numerical_df:
-            groups = []
-            for category in X_train[cat_col].unique():
-                groups.append(X_train[num_col][X_train[cat_col] == category])
-                f_statistic, p_value = f_oneway(*groups)
-                anova_results.loc[cat_col, num_col] = f_statistic, p_value
-
-    # Create a formatted DataFrame for ANOVA results with labeled interpretation
-    formatted_results = pd.DataFrame(index=categorical_df.columns, columns=numerical_df.columns)
-    for num_col in numerical_df:
-        for cat_col in categorical_df:
-            f_statistic, p_value = anova_results.loc[cat_col, num_col]
-            if p_value < 0.05:
-                significance = "Significant"
-            else:
-                significance = "Not Significant"
-                formatted_results.loc[cat_col, num_col] = f"F = {f_statistic:.2f}, p = {p_value:.4f} ({significance})"
-
-    # Display formatted ANOVA results as a table
-    print(formatted_results)
+    print("\n------------------ANOVA for Features v. Features-----------------------")
+    # Finds dependency between all features in X_train
+    def anova_fvf(X_train):
+            
+        # Extract variable names
+        variable_names = list(X_train.columns)
+    
+        # Initialize matrices to store chi-squared and p-values
+        num_variables = len(variable_names)
+        f_stats = np.zeros((num_variables, num_variables))
+        p_values = np.zeros((num_variables, num_variables))
+    
+        # Compute chi-squared and p-values for each pair of variables
+        for i, j in combinations(range(num_variables), 2):
+    
+            # Compute ANOVA: f-statistics and p-values
+            f, p = f_oneway(X_train.iloc[:, i], X_train.iloc[:, j])
+                
+            # Assign results to f_stats and p_values matrices
+            f_stats[i, j] = f
+            f_stats[j, i] = f  # Assign to symmetric position in the matrix
+            p_values[i, j] = p
+            p_values[j, i] = p  # Assign to symmetric position in the matrix
+    
+        # Create a DataFrame with variable names as index and columns
+        f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
+        p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+    
+        # Printing the matrix-like output with variable names
+        print("\nF-Statistics:")
+        print(f_stats_df)
+        print("\nP-Values:")
+        print(p_values_df)
+        
+    anova_fvf(X_train)
 
 ############################# ANOVA (Feature vs Label)  #######################
     print("\n------------------ ANOVA (Feature vs Label) -----------------------")

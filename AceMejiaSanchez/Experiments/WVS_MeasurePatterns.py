@@ -163,53 +163,53 @@ X_train = df.iloc[:168, :9]
 # y_train =  df.iloc[:168, 22]
 # y_test = df.iloc[168:241, 22]
 
-print("\n------------------ ANOVA (Feature vs Label) -----------------------")
+# print("\n------------------ ANOVA (Feature vs Label) -----------------------")
 
-# Finds dependency between all features in X_train & the label in y_train
-def anova_fvl(X_train, y_train):
+# # Finds dependency between all features in X_train & the label in y_train
+# def anova_fvl(X_train, y_train):
     
-    # Combining X_train and y_train
-    df = X_train
-    df['y_train'] = y_train
+#     # Combining X_train and y_train
+#     df = X_train
+#     df['y_train'] = y_train
 
-    # Number of features, excluding label
-    var_count = len(X_train.columns)-1
+#     # Number of features, excluding label
+#     var_count = len(X_train.columns)-1
 
-    # Creates an empty array for f-statistic and P-values
-    results = []
+#     # Creates an empty array for f-statistic and P-values
+#     results = []
 
-    for i in range(0, var_count):
+#     for i in range(0, var_count):
         
-        # Compute ANOVA
-        f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
+#         # Compute ANOVA
+#         f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
         
-        # Save p-value significance into list
-        if p_value < 0.05:
-            significance = "Significant"
-        else:
-            significance = "Not Significant"
+#         # Save p-value significance into list
+#         if p_value < 0.05:
+#             significance = "Significant"
+#         else:
+#             significance = "Not Significant"
            
-        # Append results to the list
-        results.append({
-            "Feature": df.columns[i],
-            "F-Statistic": f_statistic,
-            "P-Value": p_value, 
-            "Significance": significance})
+#         # Append results to the list
+#         results.append({
+#             "Feature": df.columns[i],
+#             "F-Statistic": f_statistic,
+#             "P-Value": p_value, 
+#             "Significance": significance})
 
-    # Create a dataFrame from the results
-    results_df = pd.DataFrame(results)
+#     # Create a dataFrame from the results
+#     results_df = pd.DataFrame(results)
     
-    # Print the dataFrame
-    print("Label:", df.columns.values[-1])
-    print(results_df.to_string(index=False))
+#     # Print the dataFrame
+#     print("Label:", df.columns.values[-1])
+#     print(results_df.to_string(index=False))
 
-# Testing consistency of ANOVA test
-for i in range(16, 25, 1):
-    # Loop through Poisson-distributed categorical features in stacked_all
-    y_train = df.iloc[:168, i]
+# # Testing consistency of ANOVA test
+# for i in range(16, 25, 1):
+#     # Loop through Poisson-distributed categorical features in stacked_all
+#     y_train = df.iloc[:168, i]
     
-    # Run ANOVA
-    anova_fvl(X_train, y_train)
+#     # Run ANOVA
+#     anova_fvl(X_train, y_train)
     
     
 ################## ANOVA FvF Re-Write ####################################
