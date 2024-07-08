@@ -248,4 +248,3 @@ def anova_fvf(X_train):
     print("\nP-Values:")
     print(p_values_df)
     
-anova_fvf(X_train)
