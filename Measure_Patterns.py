@@ -23,7 +23,7 @@ if optional is not provided, then the program will assume that the column has in
 
 
 # Load dataset 
-df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_cancer_data.csv")
+#df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_cancer_data.csv")
 # Creating NumPy array
 #array = np.array(data)
 # Converting to Pandas DataFrame
@@ -31,18 +31,37 @@ df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_ca
 # Displaying the table
 #print(df_table)
 
+data = np.loadtxt("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/uniform_large_d_1.tex")
+# Creating NumPy array
+array = np.array(data)
+# Converting to Pandas DataFrame
+df = pd.DataFrame(array)
+# Displaying the table
+print(df)
+
+
+# Converting 25 columns from numerical floats -> categorical integers
+for i in range(25):
+    
+    df.iloc[:,i] = df.iloc[:,i].round() # Rounding
+    df.iloc[:,i] = df.iloc[:,i].astype(int) # Integer
+    df.iloc[:,i] = df.iloc[:,i].astype('category') # Categories
+    
+# Turn label into categorical label
+df.iloc[:,150] = df.iloc[:,150].astype('category')
+
 
 
 # Split dataset into X_train and y_train
-X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,1:150], df.iloc[:,-1], test_size=0.2, random_state=52)
+X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,0:150], df.iloc[:,-1], test_size=0.2, random_state=52)
 
 
 # Function Measure_Patterns begins here!
 def Measure_Patterns(X_train, y_train, optional=None):
     
     # Initialize empty dataframes for numerical and categorical data
-    numerical_df = pd.DataFrame()
-    categorical_df = pd.DataFrame()
+    #numerical_df = pd.DataFrame()
+    #categorical_df = pd.DataFrame()
     
     # Check if the data type is provided for columns
     if optional is None:
@@ -95,7 +114,6 @@ def Measure_Patterns(X_train, y_train, optional=None):
             
         else:
             print("The length of X_train and optional are different.")
-    return numerical_df, categorical_df
 
 
 ##################### Correlation between columns (numerical) Code ############################
@@ -283,26 +301,66 @@ def Measure_Patterns(X_train, y_train, optional=None):
         
 ########################## Histogram/Graphing ###############################
 
-print("------------------------Histogram/Graphing-----------------------------")
+    print("------------------------Histogram/Graphing-----------------------------")
 
 
-###### These are just here for now so the histogram and bar graph functions work
-# Splitting X_train into numerical subset 
-numerical_df = X_train.select_dtypes(include = ["float64"])
+    ###### These are just here for now so the histogram and bar graph functions work
+    # Splitting X_train into numerical subset 
+    numerical_df = X_train.select_dtypes(include = ["float64"])
 
-# Splitting X_train into categorical subset 
-categorical_df = X_train.select_dtypes(exclude=['float64'])    
+    # Splitting X_train into categorical subset 
+    categorical_df = X_train.select_dtypes(exclude=['float64'])    
 
     # Ensure data is 2D
-if numerical_df.ndim == 1:
-    numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
+    if numerical_df.ndim == 1:
+        numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
 
-# Number of features (columns) in the dataset
-numerical_num_features = numerical_df.shape[1]
+    # Number of features (columns) in the dataset
+    numerical_num_features = numerical_df.shape[1]
 
 
-# Loop through each numerical feature
-for feature_idx in range(numerical_num_features):
+    # Loop through each numerical feature
+    for feature_idx in range(numerical_num_features):
+        # Extract the current feature data (column)
+        feature_df = numerical_df.iloc[:, feature_idx]
+        
+        # Compute histogram with 10 bins
+        hist, bin_edges = np.histogram(feature_df, bins=10)
+
+        # Print feature number
+        print(f"Feature {feature_idx + 1}:")
+    
+        # Print bin edges
+        print("Bin Edges:", bin_edges)
+
+        # Store bin heights in a list
+        bin_heights = []
+        bin_heights.extend(hist)
+        print("Array with bin heights:", bin_heights)
+
+        # Store bin probabilities in a list and normalize
+        bin_probs = []
+        bin_probs.extend(hist)
+        bin_probs = np.array(bin_probs) / sum(bin_heights)
+        print("Array with bin probabilities:", bin_probs)
+
+        # Loop through each bin to print range and probabilities
+        for i in range(len(hist)):
+            bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"  # Bin range
+            bin_probability = hist[i] / sum(hist)  # Bin probability
+            print(f"Bin {i + 1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
+
+        # Separator between features for clarity
+        print("\n" + "="*50 + "\n")
+
+    # Calculate and store probabilities for each categorical column
+    print("Proportions for Label for Categorical Columns:")
+
+    for column in categorical_df.columns:
+        value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
+        # print(f"Probabilities for Categorical Column {column}:")
+        print(value_counts)
+        print()  # Add an empty line for separation   
     # Extract the current feature data (column)
     feature_df = numerical_df.iloc[:, feature_idx]
 
@@ -335,14 +393,7 @@ for feature_idx in range(numerical_num_features):
     # Separator between features for clarity
     print("\n" + "="*50 + "\n")
 
-# Calculate and store probabilities for each categorical column
-print("Proportions for Label for Categorical Columns:")
-
-for column in categorical_df.columns:
-    value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
-    # print(f"Probabilities for Categorical Column {column}:")
-    print(value_counts)
-    print()  # Add an empty line for separation    
+      
     
 
 ############################ KL Divergence ####################################
