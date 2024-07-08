@@ -34,7 +34,7 @@ df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_ca
 
 
 # Split dataset into X_train and y_train
-X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,0:150], df.iloc[:,-1], test_size=0.2, random_state=52)
+X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,1:150], df.iloc[:,-1], test_size=0.2, random_state=52)
 
 
 # Function Measure_Patterns begins here!
@@ -50,12 +50,12 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
         # Splitting X_train into numerical subset 
         print("\nNumerical DataFrame:")
-        numerical_df = X_train.select_dtypes(include = ["float64"])
+        numerical_df = X_train.select_dtypes(include = ['int', 'int64', 'float', 'float64'])
         print(numerical_df)
 
         # Splitting X_train into categorical subset 
         print("Categorical DataFrame:")
-        categorical_df = X_train.select_dtypes(exclude=['float64'])
+        categorical_df = X_train.select_dtypes(include=['object', 'category'])
         print(categorical_df)
     
 
