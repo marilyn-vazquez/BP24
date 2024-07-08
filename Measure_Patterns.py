@@ -21,9 +21,19 @@ optional will check if the columns selected is categorical (integers and strings
 if optional is not provided, then the program will assume that the column has integers values, therefore it will be considered categorical
 """
 
+# STEPS TO DO IN A SEPARATE FILE: 
+### Import function file
+# import sys
+# sys.path.append('C:/Users/...YOUR Measure_Patterns.py FILE PATH HERE.../')
+# import Measure_Patterns
 
+<<<<<<< Updated upstream
 # Load dataset 
+<<<<<<< Updated upstream
 df = pd.read_csv("/Users/elleemortensen/Downloads/D3Softball.csv")
+=======
+df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_cancer_data.csv")
+>>>>>>> Stashed changes
 # Creating NumPy array
 #array = np.array(data)
 # Converting to Pandas DataFrame
@@ -31,14 +41,50 @@ df = pd.read_csv("/Users/elleemortensen/Downloads/D3Softball.csv")
 # Displaying the table
 #print(df_table)
 
+<<<<<<< Updated upstream
 
 
 # Split dataset into X_train and y_train
 X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,1:150], df.iloc[:,-1], test_size=0.2, random_state=52)
+=======
+#data = np.loadtxt("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/uniform_large_d_1.tex")
+# Creating NumPy array
+#array = np.array(data)
+# Converting to Pandas DataFrame
+#df = pd.DataFrame(array)
+# Displaying the table
+#print(df)
 
+
+# Converting 25 columns from numerical floats -> categorical integers
+#for i in range(25):
+    
+    #df.iloc[:,i] = df.iloc[:,i].round() # Rounding
+    #df.iloc[:,i] = df.iloc[:,i].astype(int) # Integer
+    #df.iloc[:,i] = df.iloc[:,i].astype('category') # Categories
+    
+# Turn label into categorical label
+#df.iloc[:,150] = df.iloc[:,150].astype('category')
+
+
+
+# Split dataset into X_train and y_train
+<<<<<<< HEAD
+X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,1:150], df.iloc[:,-1], test_size=0.2, random_state=52)
+=======
+X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,0:150], df.iloc[:,-1], test_size=0.2, random_state=52)
+=======
+### Load dataset 
+# df = pd.read_csv("/Users/...YOUR Data FILE PATH HERE")
+>>>>>>> Stashed changes
+>>>>>>> b5b9d38989fa43fa6032120ffc1d695893089974
+>>>>>>> Stashed changes
+
+### Split dataset into X_train and y_train
+# X_train, X_test, y_train, y_test = train_test_split(df.iloc[:, YOUR COLUMN INDEXES], df.iloc[:, YOUR LABEL INDEX], test_size=0.2, random_state=42)
 
 # Function Measure_Patterns begins here!
-def Measure_Patterns(X_train, y_train, optional=None):
+def MeasurePatterns(X_train, y_train, optional=None):
     
     # Initialize empty dataframes for numerical and categorical data
     numerical_df = pd.DataFrame()
@@ -50,12 +96,12 @@ def Measure_Patterns(X_train, y_train, optional=None):
     
         # Splitting X_train into numerical subset 
         print("\nNumerical DataFrame:")
-        numerical_df = X_train.select_dtypes(include = ['int', 'int64', 'float', 'float64'])
+        numerical_df = X_train.select_dtypes(include = ['float', 'float64'])
         print(numerical_df)
 
         # Splitting X_train into categorical subset 
-        print("Categorical DataFrame:")
-        categorical_df = X_train.select_dtypes(include=['object', 'category'])
+        print("\nCategorical DataFrame:")
+        categorical_df = X_train.select_dtypes(exclude=['float', 'float64'])
         print(categorical_df)
     
 
@@ -97,8 +143,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
             print("The length of X_train and optional are different.")
     return numerical_df, categorical_df
 
-
-##################### Correlation between columns (numerical) Code ############################
+################# Correlation between columns (numerical) Code ################
     # Takes the X_train data to find correlation between NUMERICAL features
     def num_corr(X_train_numerical):
         matrix = X_train_numerical.corr(method='pearson')
@@ -107,7 +152,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
     #Calls the function so the matrix prints out    
     num_corr(numerical_df)
     
-##################### Chi-Square (F vs F) Code ################################################
+##################### Chi-Square (F vs F) Code ################################
     
     print("\n------------------Chi-Squared for Features v. Features-----------------------")
     # Finds dependency between all features in X_train
@@ -159,7 +204,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
         
     chi_squared_fvf(categorical_df)
     
-##################### Chi-Square (F vs label column) Code ####################################
+##################### Chi-Square (F vs label column) Code #####################
     
     print("\n------------------------Chi-Square (F vs label column)------------------------")
     # Finds dependency between all features in X_train & the label in y_train
@@ -209,78 +254,80 @@ def Measure_Patterns(X_train, y_train, optional=None):
         
     chi_squared_fvl(categorical_df, y_train)
     
-############################# ANOVA (Feature vs Feature) #########################################
+# ############################# ANOVA (Feature vs Feature) ######################
 
+<<<<<<< HEAD
     print("\n------------------ ANOVA (Feature vs Feature) -----------------------")
     # Initialize an empty DataFrame to store ANOVA results
-    anova_results = pd.DataFrame(index=categorical_df.columns, columns=numerical_df.columns)
+    anova_results = pd.DataFrame(index=categorical_df, columns=numerical_df)
+=======
+#     print("\n------------------ ANOVA (Feature vs Feature) -----------------------")
+#     # Initialize an empty DataFrame to store ANOVA results
+#     anova_results = pd.DataFrame(index=categorical_df.columns, columns=numerical_df.columns)
+>>>>>>> b5b9d38989fa43fa6032120ffc1d695893089974
 
-    # Perform ANOVA for each combination of categorical and numerical columns
-    for cat_col in categorical_df:
-        for num_col in numerical_df:
-            groups = []
-            for category in X_train[cat_col].unique():
-                groups.append(X_train[num_col][X_train[cat_col] == category])
-                f_statistic, p_value = f_oneway(*groups)
-                anova_results.loc[cat_col, num_col] = f_statistic, p_value
+#     # Perform ANOVA for each combination of categorical and numerical columns
+#     for cat_col in categorical_df:
+#         for num_col in numerical_df:
+#             groups = []
+#             for category in X_train[cat_col].unique():
+#                 groups.append(X_train[num_col][X_train[cat_col] == category])
+#                 f_statistic, p_value = f_oneway(*groups)
+#                 anova_results.loc[cat_col, num_col] = f_statistic, p_value
 
-    # Create a formatted DataFrame for ANOVA results with labeled interpretation
-    formatted_results = pd.DataFrame(index=categorical_df.columns, columns=numerical_df.columns)
-    for num_col in numerical_df:
-        for cat_col in categorical_df:
-            f_statistic, p_value = anova_results.loc[cat_col, num_col]
-            if p_value < 0.05:
-                significance = "Significant"
-            else:
-                significance = "Not Significant"
-                formatted_results.loc[cat_col, num_col] = f"F = {f_statistic:.2f}, p = {p_value:.4f} ({significance})"
+#     # Create a formatted DataFrame for ANOVA results with labeled interpretation
+#     formatted_results = pd.DataFrame(index=categorical_df.columns, columns=numerical_df.columns)
+#     for num_col in numerical_df:
+#         for cat_col in categorical_df:
+#             f_statistic, p_value = anova_results.loc[cat_col, num_col]
+#             if p_value < 0.05:
+#                 significance = "Significant"
+#             else:
+#                 significance = "Not Significant"
+#                 formatted_results.loc[cat_col, num_col] = f"F = {f_statistic:.2f}, p = {p_value:.4f} ({significance})"
 
-    # Display formatted ANOVA results as a table
-    print(formatted_results)
+#     # Display formatted ANOVA results as a table
+#     print(formatted_results)
+
+# ############################# ANOVA (Feature vs Label)  #######################
+#     print("\n------------------ ANOVA (Feature vs Label) -----------------------")
+#     # Concatenate X_train and y_train into a single DataFrame for ANOVA comparison
+#     data = pd.concat([X_train, y_train], axis=1)
+
+#     # Automatically detect all columns as features (numerical and categorical)
+#     all_columns = data.columns
+
+#     # Identify the last column as the target column
+#     target_column = all_columns[-1]
+
+#     # Initialize an empty DataFrame to store ANOVA results
+#     anova_results = pd.DataFrame(index=[target_column], columns=all_columns)
+
+#     # Perform ANOVA for each feature column against the target column
+#     for feature_col in all_columns:
+#         if feature_col == target_column:
+#             continue  # Skip the target column itself
+#             groups = [data[feature_col][data[target_column] == value] for value in data[target_column].unique()]
+#             f_statistic, p_value = f_oneway(*groups)
+#             anova_results.loc[target_column, feature_col] = f"F = {f_statistic:.2f}, p = {p_value:.4f}"
+
+#     # Print ANOVA results for each feature with significance indication
+#     print("ANOVA Results:")
+#     for feature_col in anova_results.columns[:-1]:  # Exclude the last column (target column)
+#         result = anova_results.loc[target_column, feature_col]
+#         f_statistic, p_value = result.split(', ')
+#         f_statistic = float(f_statistic.split(' = ')[1])
+#         p_value = float(p_value.split(' = ')[1])
     
+#         if p_value < 0.05:
+#             significance = "Significant"
+#         else:
+#             significance = "Not Significant"
     
-    
-
-
-
-############################# ANOVA (Feature vs Label)  #########################################
-    print("\n------------------ ANOVA (Feature vs Label) -----------------------")
-    # Concatenate X_train and y_train into a single DataFrame for ANOVA comparison
-    data = pd.concat([X_train, y_train], axis=1)
-
-    # Automatically detect all columns as features (numerical and categorical)
-    all_columns = data.columns
-
-    # Identify the last column as the target column
-    target_column = all_columns[-1]
-
-    # Initialize an empty DataFrame to store ANOVA results
-    anova_results = pd.DataFrame(index=[target_column], columns=all_columns)
-
-    # Perform ANOVA for each feature column against the target column
-    for feature_col in all_columns:
-        if feature_col == target_column:
-            continue  # Skip the target column itself
-            groups = [data[feature_col][data[target_column] == value] for value in data[target_column].unique()]
-            f_statistic, p_value = f_oneway(*groups)
-            anova_results.loc[target_column, feature_col] = f"F = {f_statistic:.2f}, p = {p_value:.4f}"
-
-    # Print ANOVA results for each feature with significance indication
-    print("ANOVA Results:")
-    for feature_col in anova_results.columns[:-1]:  # Exclude the last column (target column)
-        result = anova_results.loc[target_column, feature_col]
-        f_statistic, p_value = result.split(', ')
-        f_statistic = float(f_statistic.split(' = ')[1])
-        p_value = float(p_value.split(' = ')[1])
-    
-        if p_value < 0.05:
-            significance = "Significant"
-        else:
-            significance = "Not Significant"
-    
-        print(f"{feature_col}: {result} ({significance})")
+#         print(f"{feature_col}: {result} ({significance})")
         
         
+<<<<<<< Updated upstream
 ########################## Histogram/Graphing ###############################
 
 print("------------------------Histogram/Graphing-----------------------------")
@@ -335,6 +382,7 @@ for feature_idx in range(numerical_num_features):
     # Separator between features for clarity
     print("\n" + "="*50 + "\n")
 
+<<<<<<< Updated upstream
 # Calculate and store probabilities for each categorical column
 print("Proportions for Label for Categorical Columns:")
 
@@ -343,14 +391,82 @@ for column in categorical_df.columns:
     # print(f"Probabilities for Categorical Column {column}:")
     print(value_counts)
     print()  # Add an empty line for separation    
+=======
+      
+=======
+########################## Histogram/Graphing #################################
+>>>>>>> Stashed changes
     
+    print("------------------------Histogram/Graphing-----------------------------")
+>>>>>>> Stashed changes
+    
+    
+    ###### These are just here for now so the histogram and bar graph functions work
+    # Splitting X_train into numerical subset 
+    # numerical_df = X_train.select_dtypes(include = ["float64"])
+    
+    # Splitting X_train into categorical subset 
+    # categorical_df = X_train.select_dtypes(exclude=['float64'])    
+    
+        # Ensure data is 2D
+    if numerical_df.ndim == 1:
+        numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
+    
+    # Number of features (columns) in the dataset
+    numerical_num_features = numerical_df.shape[1]
+    
+    
+    # Loop through each numerical feature
+    for feature_idx in range(numerical_num_features):
+        # Extract the current feature data (column)
+        feature_df = numerical_df.iloc[:, feature_idx]
+    
+        # Compute histogram with 10 bins
+        hist, bin_edges = np.histogram(feature_df, bins=10)
+    
+        # Print feature number
+        print(f"Feature {feature_idx + 1}:")
+        
+        # Print bin edges
+        print("Bin Edges:", bin_edges)
+    
+        # Store bin heights in a list
+        bin_heights = []
+        bin_heights.extend(hist)
+        print("Array with bin heights:", bin_heights)
+    
+        # Store bin probabilities in a list and normalize
+        bin_probs = []
+        bin_probs.extend(hist)
+        bin_probs = np.array(bin_probs) / sum(bin_heights)
+        print("Array with bin probabilities:", bin_probs)
+    
+        # Loop through each bin to print range and probabilities
+        for i in range(len(hist)):
+            bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"  # Bin range
+            bin_probability = hist[i] / sum(hist)  # Bin probability
+            print(f"Bin {i + 1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
+    
+        # Separator between features for clarity
+        print("\n" + "="*50 + "\n")
+    
+    # Calculate and store probabilities for each categorical column
+    print("Proportions for Label for Categorical Columns:")
+    
+    for column in categorical_df.columns:
+        value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
+        # print(f"Probabilities for Categorical Column {column}:")
+        print(value_counts)
+        print()  # Add an empty line for separation    
+        
+############################ KL Divergence: NOT DONE ####################################
 
-############################ KL Divergence ####################################
 
-optional_test = []
+############################ Testing optional argument ####################################
+# optional_test = []
 
-for i in range(151):
-    optional_test.append(bool(random.getrandbits(1)))
+# for i in range(151):
+    # optional_test.append(bool(random.getrandbits(1)))
 
 # Call the measure_patterns function
-Measure_Patterns(X_train, y_train)
+# Measure_Patterns(X_train, y_train, optional=optional_test)
