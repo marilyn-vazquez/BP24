@@ -96,7 +96,7 @@ def MeasurePatterns(X_train, y_train, optional=None):
             
         else:
             print("The length of X_train and optional are different.")
-    return numerical_df, categorical_df
+
 
 ################# Correlation between columns (numerical) Code ################
     # Takes the X_train data to find correlation between NUMERICAL features
