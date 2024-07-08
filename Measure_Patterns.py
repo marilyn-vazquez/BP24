@@ -236,7 +236,6 @@ def Measure_Patterns(X_train, y_train, optional=None):
                 formatted_results.loc[cat_col, num_col] = f"F = {f_statistic:.2f}, p = {p_value:.4f} ({significance})"
 
     # Display formatted ANOVA results as a table
-    print("ANOVA Results:")
     print(formatted_results)
     
     
@@ -244,7 +243,7 @@ def Measure_Patterns(X_train, y_train, optional=None):
 
 
 
-############################# ANOVA (Feature vs Label) THIS IS PENDING #########################################
+############################# ANOVA (Feature vs Label)  #########################################
     print("\n------------------ ANOVA (Feature vs Label) -----------------------")
     # Concatenate X_train and y_train into a single DataFrame for ANOVA comparison
     data = pd.concat([X_train, y_train], axis=1)
