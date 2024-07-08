@@ -23,7 +23,7 @@ if optional is not provided, then the program will assume that the column has in
 
 
 # Load dataset 
-df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_cancer_data.csv")
+df = pd.read_csv("/Users/elleemortensen/Downloads/D3Softball.csv")
 # Creating NumPy array
 #array = np.array(data)
 # Converting to Pandas DataFrame
