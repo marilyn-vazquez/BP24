@@ -33,7 +33,7 @@ import Measure_Patterns
 ################## Import Data & X_train ######################################
 
 # Import data
-df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
+df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Data/Stacked/stacked_orig.csv")
 
 # Indexing through pre-prepared splitting in stacked_all
 X_train = df.iloc[:168, 9:16]
@@ -243,18 +243,21 @@ width = 0.35
 fig, ax = plt.subplots()
 
 # Bars for Significant
-bar1 = ax.bar(ind - width/2, sigs, width, label='Significant')
+bar1 = ax.bar(ind - width/2, sigs, width, label='Significant', color='skyblue')
 
 # Bars for Not Significant
-bar2 = ax.bar(ind + width/2, no_sigs, width, label='Not Significant')
+bar2 = ax.bar(ind + width/2, no_sigs, width, label='Not Significant', color='salmon')
 
 # Adding labels, title, and legend
 ax.set_xlabel('Tests')
-ax.set_ylabel('Counts')
-ax.set_title('UNIFORM: ANOVA v. Kruskal-Wallis v. Anderson-Govern')
+ax.set_ylabel('Significance Counts')
+ax.set_title('ANOVA v. KWH Test v. AG Test\n on UNIFORM Columns & POISSON Label')
 ax.set_xticks(ind)
 ax.set_xticklabels(categories)
 ax.legend()
 
+# Save plot
+plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/ANOVA_Alts_Uniform.png', dpi=300)
+
 # Show plot
-plt.show()
+plt.show() 
