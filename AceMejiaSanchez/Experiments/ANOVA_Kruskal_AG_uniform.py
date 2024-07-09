@@ -36,8 +36,8 @@ import Measure_Patterns
 df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
 
 # Indexing through pre-prepared splitting in stacked_all
-X_train = df.iloc[:168, :8]
-# X_test = df.iloc[168:241, :16]
+X_train = df.iloc[:168, 9:16]
+# X_test = df.iloc[168:241, 9:16]
 # y_train =  df.iloc[:168, 22]
 # y_test = df.iloc[168:241, 22]
 
@@ -251,7 +251,7 @@ bar2 = ax.bar(ind + width/2, no_sigs, width, label='Not Significant')
 # Adding labels, title, and legend
 ax.set_xlabel('Tests')
 ax.set_ylabel('Counts')
-ax.set_title('ANOVA v. Kruskal-Wallis v. Anderson-Govern')
+ax.set_title('UNIFORM: ANOVA v. Kruskal-Wallis v. Anderson-Govern')
 ax.set_xticks(ind)
 ax.set_xticklabels(categories)
 ax.legend()
