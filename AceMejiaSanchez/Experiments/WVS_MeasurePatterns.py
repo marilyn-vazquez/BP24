@@ -152,13 +152,50 @@ import Measure_Patterns
 ################## Running Measure_Patterns() ####################################
 # Measure_Patterns.MeasurePatterns(X_train, y_train)
 
+################## ANOVA FvF Re-Write ####################################
+
+# print("\n------------------ANOVA for Features v. Features-----------------------")
+# # Finds dependency between all features in X_train
+# def anova_fvf(X_train):
+        
+#     # Extract variable names
+#     variable_names = list(X_train.columns)
+
+#     # Initialize matrices to store chi-squared and p-values
+#     num_variables = len(variable_names)
+#     f_stats = np.zeros((num_variables, num_variables))
+#     p_values = np.zeros((num_variables, num_variables))
+
+#     # Compute chi-squared and p-values for each pair of variables
+#     for i, j in combinations(range(num_variables), 2):
+
+#         # Compute ANOVA: f-statistics and p-values
+#         f, p = f_oneway(X_train.iloc[:, i], X_train.iloc[:, j])
+            
+#         # Assign results to f_stats and p_values matrices
+#         f_stats[i, j] = f
+#         f_stats[j, i] = f  # Assign to symmetric position in the matrix
+#         p_values[i, j] = p
+#         p_values[j, i] = p  # Assign to symmetric position in the matrix
+
+#     # Create a DataFrame with variable names as index and columns
+#     f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
+#     p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+
+#     # Printing the matrix-like output with variable names
+#     print("\nF-Statistics:")
+#     print(f_stats_df)
+#     print("\nP-Values:")
+#     print(p_values_df)
+    
+
 ################## ANOVA FvL Re-Write ####################################
 
 # Import data
-df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
+# df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
 
 # Indexing through pre-prepared splitting in stacked_all
-X_train = df.iloc[:168, :9]
+# X_train = df.iloc[:168, :9]
 # X_test = df.iloc[168:241, :9]
 # y_train =  df.iloc[:168, 22]
 # y_test = df.iloc[168:241, 22]
@@ -211,40 +248,4 @@ X_train = df.iloc[:168, :9]
 #     # Run ANOVA
 #     anova_fvl(X_train, y_train)
     
-    
-################## ANOVA FvF Re-Write ####################################
-
-print("\n------------------ANOVA for Features v. Features-----------------------")
-# Finds dependency between all features in X_train
-def anova_fvf(X_train):
-        
-    # Extract variable names
-    variable_names = list(X_train.columns)
-
-    # Initialize matrices to store chi-squared and p-values
-    num_variables = len(variable_names)
-    f_stats = np.zeros((num_variables, num_variables))
-    p_values = np.zeros((num_variables, num_variables))
-
-    # Compute chi-squared and p-values for each pair of variables
-    for i, j in combinations(range(num_variables), 2):
-
-        # Compute ANOVA: f-statistics and p-values
-        f, p = f_oneway(X_train.iloc[:, i], X_train.iloc[:, j])
-            
-        # Assign results to f_stats and p_values matrices
-        f_stats[i, j] = f
-        f_stats[j, i] = f  # Assign to symmetric position in the matrix
-        p_values[i, j] = p
-        p_values[j, i] = p  # Assign to symmetric position in the matrix
-
-    # Create a DataFrame with variable names as index and columns
-    f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
-    p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
-
-    # Printing the matrix-like output with variable names
-    print("\nF-Statistics:")
-    print(f_stats_df)
-    print("\nP-Values:")
-    print(p_values_df)
     
