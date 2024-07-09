@@ -24,7 +24,7 @@ from scipy.stats import f_oneway
 # STEPS TO DO IN A     SEPARATE     FILE: 
 ################## Import function ############################################
 import sys
-sys.path.append("/Users/fabianafazio/Documents/GitHub/BP24/Measure_Patterns.py")
+sys.path.append("/Users/fabianafazio/Documents/GitHub/BP24/")
 import Measure_Patterns
 
 ################## Import data ################################################
