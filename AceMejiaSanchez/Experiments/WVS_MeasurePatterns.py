@@ -23,134 +23,135 @@ from sklearn.feature_selection import chi2
 import random
 from scipy.stats import f_oneway
 from itertools import combinations
+from scipy.stats import kruskal
 ################## Import function ######################################################
 import sys
 sys.path.append('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/')
 import Measure_Patterns
 
-# ################## Import data ######################################################
-# df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/SIAM Simons Summer Opportunity/Datasets/WVS_Cross-National_Wave_7_csv_v6_0.csv")
+################## Import data ######################################################
+df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/SIAM Simons Summer Opportunity/Datasets/WVS_Cross-National_Wave_7_csv_v6_0.csv")
 
-# ################## Data cleaning ######################################################
-# # Find index of Q1 to last column & label (Q46)
-# start_col_index = df.columns.get_loc('Q1')
-# label_index = df.columns.get_loc('Q46')
+################## Data cleaning ######################################################
+# Find index of Q1 to last column & label (Q46)
+start_col_index = df.columns.get_loc('Q1')
+label_index = df.columns.get_loc('Q46')
 
-# # Subsetting to only columns that are Core Questions to Contextual Questinos in WVS CodeBook
-# df = df.iloc[:,start_col_index:-1]
+# Subsetting to only columns that are Core Questions to Contextual Questinos in WVS CodeBook
+df = df.iloc[:,start_col_index:-1]
 
-# # Finding columns that are strings
-# string_vars = df.select_dtypes(include=['object'])
-# string_vars.columns
+# Finding columns that are strings
+string_vars = df.select_dtypes(include=['object'])
+string_vars.columns
 
-# # Dropping columns that are strings/objects, these seem to be country-specific variables
-# df = df.drop(columns=['X002_02B', 'V002A_01', 'V001A_01', 'Partyname', 'Partyabb', 'CPARTY',
-#        'CPARTYABB'])
+# Dropping columns that are strings/objects, these seem to be country-specific variables
+df = df.drop(columns=['X002_02B', 'V002A_01', 'V001A_01', 'Partyname', 'Partyabb', 'CPARTY',
+        'CPARTYABB'])
 
-# # Find index of Q1-Q290 & label (Q46)
-# start_col_index = df.columns.get_loc('Q1')
-# label_index = df.columns.get_loc('Q46')
+# Find index of Q1-Q290 & label (Q46)
+start_col_index = df.columns.get_loc('Q1')
+label_index = df.columns.get_loc('Q46')
 
-# # Checking classes of Q1 & Q46
-# old_q1 = df.Q1.unique()
-# old_q46 = df.Q46.unique()
+# Checking classes of Q1 & Q46
+old_q1 = df.Q1.unique()
+old_q46 = df.Q46.unique()
 
-# # Define the mapping for missing values
-# value_mapping = {
-#     -1: np.nan,
-#     -2: np.nan,
-#     -4: np.nan,
-#     -5: np.nan,
-#     -999.0: np.nan,
-#     -9999.0: np.nan
-# }
+# Define the mapping for missing values
+value_mapping = {
+    -1: np.nan,
+    -2: np.nan,
+    -4: np.nan,
+    -5: np.nan,
+    -999.0: np.nan,
+    -9999.0: np.nan
+}
+
+# Function to apply the mapping
+def map_binary_values(x):
+    return value_mapping.get(x, x)
+
+# Apply the mapping only to the specified columns
+df.iloc[:,start_col_index:-1] = df.iloc[:,start_col_index:-1].applymap(map_binary_values)
+
+# Define the mapping for missing values
+Q46_value_mapping = {
+      1: 1,
+      2: 1,
+      3: 0,
+      4: 0,
+}
 
 # # Function to apply the mapping
-# def map_binary_values(x):
-#     return value_mapping.get(x, x)
+def map_Q46_values(x):
+    return Q46_value_mapping.get(x, x)
 
-# # Apply the mapping only to the specified columns
-# df.iloc[:,start_col_index:-1] = df.iloc[:,start_col_index:-1].applymap(map_binary_values)
+# # Apply the mapping only to the specified column Q46
+df.iloc[:,label_index] = df.iloc[:,label_index].map(map_Q46_values)
 
-# # Define the mapping for missing values
-# Q46_value_mapping = {
-#      1: 1,
-#      2: 1,
-#      3: 0,
-#      4: 0,
-# }
+# Re-checking classes of Q1 & Q46
+new_q1 = df.Q1.unique()
+new_q46 = df.Q46.unique()
 
-# # # Function to apply the mapping
-# def map_Q46_values(x):
-#     return Q46_value_mapping.get(x, x)
+print("Old Classes: \n", old_q1, old_q46)
+print("New Classes: \n", new_q1, new_q46)
 
-# # # Apply the mapping only to the specified column Q46
-# df.iloc[:,label_index] = df.iloc[:,label_index].map(map_Q46_values)
+# Drop rows where 'Q46' has NaN values
+df = df.dropna(subset=['Q46'])
 
-# # Re-checking classes of Q1 & Q46
-# new_q1 = df.Q1.unique()
-# new_q46 = df.Q46.unique()
+# Checking if it works
+print(df['Q46'].isna().sum())
 
-# print("Old Classes: \n", old_q1, old_q46)
-# print("New Classes: \n", new_q1, new_q46)
+# Checking which columns have 80,000+ NaNs
+# Calculate the sum of NaNs in each column
+# nan_counts = df.isna().sum()
 
-# # Drop rows where 'Q46' has NaN values
-# df = df.dropna(subset=['Q46'])
+# Print the result for each column
+#for column, count in nan_counts.items():
+    #print(f'Column "{column}" has {count} NaN values.')
 
-# # Checking if it works
-# print(df['Q46'].isna().sum())
+# Keeping original shape
+old_shape = df.shape
 
-# # Checking which columns have 80,000+ NaNs
-# # Calculate the sum of NaNs in each column
-# # nan_counts = df.isna().sum()
+# Define the ranges of column names to drop
+ranges_to_drop = [
+    ('Q82_AFRICANUNION', 'Q82_UNDP'),  # First range
+    ('Q291G1', 'Q294B'),  # Second range
+    ('ID_GPS', 'v2xnp_client')   # Third range
+]
 
-# # Print the result for each column
-# #for column, count in nan_counts.items():
-#     #print(f'Column "{column}" has {count} NaN values.')
+# Create a list to store column names to drop
+columns_to_drop = []
 
-# # Keeping original shape
-# old_shape = df.shape
+# Populate the list with column names from the defined ranges
+for start_col, end_col in ranges_to_drop:
+    start_idx = df.columns.get_loc(start_col)
+    end_idx = df.columns.get_loc(end_col)
+    columns_to_drop.extend(df.columns[start_idx:end_idx+1])
 
-# # Define the ranges of column names to drop
-# ranges_to_drop = [
-#     ('Q82_AFRICANUNION', 'Q82_UNDP'),  # First range
-#     ('Q291G1', 'Q294B'),  # Second range
-#     ('ID_GPS', 'v2xnp_client')   # Third range
-# ]
+# Drop the columns
+df = df.drop(columns=columns_to_drop)
 
-# # Create a list to store column names to drop
-# columns_to_drop = []
+# Dropping all rows that contain NAs
+df = df.dropna()
+new_shape = df.shape
+print("Old Shape:", old_shape)
+print("New Shape:", new_shape)
 
-# # Populate the list with column names from the defined ranges
-# for start_col, end_col in ranges_to_drop:
-#     start_idx = df.columns.get_loc(start_col)
-#     end_idx = df.columns.get_loc(end_col)
-#     columns_to_drop.extend(df.columns[start_idx:end_idx+1])
+# Check for columns without negative values
+non_negative_columns = df.columns[(df >= 0).all()]
 
-# # Drop the columns
-# df = df.drop(columns=columns_to_drop)
+# Subset the DataFrame to include only columns with negative values
+df = df[non_negative_columns]
 
-# # Dropping all rows that contain NAs
-# df = df.dropna()
-# new_shape = df.shape
-# print("Old Shape:", old_shape)
-# print("New Shape:", new_shape)
+df_shape = df.shape
+print("Old Shape:", old_shape)
+print("New Shape:", new_shape)
 
-# # Check for columns without negative values
-# non_negative_columns = df.columns[(df >= 0).all()]
+################# Split dataset into X_train and y_train ####################################
+X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,start_col_index:-1].drop(columns=['Q46']), df.iloc[:,label_index], test_size=0.2, random_state=42)
 
-# # Subset the DataFrame to include only columns with negative values
-# df = df[non_negative_columns]
-
-# df_shape = df.shape
-# print("Old Shape:", old_shape)
-# print("New Shape:", new_shape)
-
-################## Split dataset into X_train and y_train ####################################
-# X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,start_col_index:-1].drop(columns=['Q46']), df.iloc[:,label_index], test_size=0.2, random_state=42)
-
-################## Running Measure_Patterns() ####################################
-# Measure_Patterns.MeasurePatterns(X_train, y_train)
+################# Running Measure_Patterns() ####################################
+Measure_Patterns.MeasurePatterns(X_train, y_train)
 
 ################## ANOVA FvF Re-Write ####################################
 
@@ -248,4 +249,49 @@ import Measure_Patterns
 #     # Run ANOVA
 #     anova_fvl(X_train, y_train)
     
+################## KRUSKAL-WALLIS H Test (FvF) #######################################
+
+# print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
+# # Determines if all features in X_train have same mean via ranks
+# def KWH_fvf(X_train):
+#     # Extract variable names
+#     variable_names = list(X_train.columns)
+
+#     # Initialize matrices to store KWH-statistic and p-values
+#     num_variables = len(variable_names)
+#     kwh_stats = np.zeros((num_variables, num_variables))
+#     p_values = np.zeros((num_variables, num_variables))
+
+#     # Compute KWH-statistic and p-value for each pair of variables
+#     for i, j in combinations(range(num_variables), 2):
+#         try:
+#             # Checks if both columns are identical; KWH cannot run if so
+#             if np.array_equal(X_train.iloc[:, i], X_train.iloc[:, j]):
+#                 kwh_stats[i, j] = np.nan # Replacing that matrix value with NaN instead of running KWH test
+#                 kwh_stats[j, i] = np.nan
+#                 p_values[i, j] = np.nan
+#                 p_values[j, i] = np.nan
+#             else:
+#                 # Compute KRUSKA-WALLIS H Test
+#                 kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
+                
+#                 # Assign results to kwh_stats and p_values matrices
+#                 kwh_stats[i, j] = kwh
+#                 kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
+#                 p_values[i, j] = p
+#                 p_values[j, i] = p  # Assign to symmetric position in the matrix
+#         except ValueError as e:
+#             print(f"Error: {e}") # if TRY fails, print error 
+
+#     # Create a DataFrame with variable names as index and columns
+#     kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
+#     p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+
+#     # Printing the matrix-like output with variable names
+#     print("\nKruskal-Wallis H statistic:")
+#     print(kwh_stats_df)
+#     print("\nP-Values:")
+#     print(p_values_df)
+    
+# KWH_fvf(X_train)
     
