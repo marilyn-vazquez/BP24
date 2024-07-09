@@ -14,6 +14,7 @@ from sklearn.preprocessing import LabelEncoder
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import f_oneway
+from scipy.stats import kruskal
 
 """
 The function Measure_Patterns has 3 parameters: X_train, y_train, optional
@@ -247,8 +248,8 @@ def MeasurePatterns(X_train, y_train, optional=None):
         print(p_values_df)
         
     anova_fvf(X_train)
-
-############################# ANOVA (Feature vs Label)  #######################
+    
+############################# ANOVA (Feature vs Label) ######################
     print("\n------------------ ANOVA (Feature vs Label) -----------------------")
     
     # Finds dependency between all features in X_train & the label in y_train
@@ -291,6 +292,89 @@ def MeasurePatterns(X_train, y_train, optional=None):
     
     # Run ANOVA
     anova_fvl(X_train, y_train)
+
+################## KRUSKAL-WALLIS H Test (FvF) #######################################
+
+    # print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
+    # # Determines if all features in X_train have same mean via ranks
+    # def KWH_fvf(X_train):
+            
+    #     # Extract variable names
+    #     variable_names = list(X_train.columns)
+    
+    #     # Initialize matrices to store chi-squared and p-values
+    #     num_variables = len(variable_names)
+    #     kwh_stats = np.zeros((num_variables, num_variables))
+    #     p_values = np.zeros((num_variables, num_variables))
+    
+    #     # Compute chi-squared and p-values for each pair of variables
+    #     for i, j in combinations(range(num_variables), 2):
+            
+    #         # Compute KRUSKA-WALLIS H Test
+    #         kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
+            
+    #         # Assign results to kwh_stats and p_values matrices
+    #         kwh_stats[i, j] = kwh
+    #         kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
+    #         p_values[i, j] = p
+    #         p_values[j, i] = p  # Assign to symmetric position in the matrix
+    
+    #     # Create a DataFrame with variable names as index and columns
+    #     kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
+    #     p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+    
+    #     # Printing the matrix-like output with variable names
+    #     print("\nF-Statistics:")
+    #     print(kwh_stats_df)
+    #     print("\nP-Values:")
+    #     print(p_values_df)
+        
+    # KWH_fvf(X_train)
+    
+################## KRUSKAL-WALLIS H Test #######################################
+
+    print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
+    
+    # Determines if all features in X_train & the label in y_train have same mean via ranks
+    def KWH_fvl(X_train, y_train):
+        
+        # Combining X_train and y_train
+        df = X_train
+        df['y_train'] = y_train
+    
+        # Number of features, excluding label
+        var_count = len(X_train.columns)-1
+        
+        # Creates an empty array for f-statistic and P-values
+        results = []
+    
+        for i in range(0, var_count):
+            
+            # Compute KRUSKA-WALLIS H Test
+            kwh_statistic, p_value = kruskal(df.iloc[:,i], df.iloc[:,-1])
+            
+            # Save p-value significance into list
+            if p_value < 0.05:
+                significance = "Significant"
+            else:
+                significance = "Not Significant"
+               
+            # Append results to the list
+            results.append({
+                "Feature": df.columns[i],
+                "Kruskal-Wallis H statistic": kwh_statistic,
+                "P-Value": p_value, 
+                "Significance": significance})
+    
+        # Create a dataFrame from the results
+        results_df = pd.DataFrame(results)
+        
+        # Print the dataFrame
+        print("Label:", df.columns.values[-1])
+        print(results_df.to_string(index=False))
+    
+    # Run ANOVA
+    KWH_fvl(X_train, y_train)
 
 ########################## Histogram/Graphing #################################
     print("------------------------Histogram/Graphing-----------------------------") 
