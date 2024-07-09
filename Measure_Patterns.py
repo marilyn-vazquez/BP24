@@ -62,8 +62,6 @@ def MeasurePatterns(X_train, y_train, optional=None):
         print("\nCategorical DataFrame:")
         categorical_df = X_train.select_dtypes(exclude=['float', 'float64'])
         print(categorical_df)
-    
-
     else:
         # Create empty numerical & categorical data frames
         numerical = []
