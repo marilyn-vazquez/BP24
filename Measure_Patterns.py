@@ -294,42 +294,50 @@ def MeasurePatterns(X_train, y_train, optional=None):
     anova_fvl(X_train, y_train)
 
 ################## KRUSKAL-WALLIS H Test (FvF) #######################################
-
-    # print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
-    # # Determines if all features in X_train have same mean via ranks
-    # def KWH_fvf(X_train):
-            
-    #     # Extract variable names
-    #     variable_names = list(X_train.columns)
     
-    #     # Initialize matrices to store chi-squared and p-values
-    #     num_variables = len(variable_names)
-    #     kwh_stats = np.zeros((num_variables, num_variables))
-    #     p_values = np.zeros((num_variables, num_variables))
+    print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
+    # Determines if all features in X_train have same mean via ranks
+    def KWH_fvf(X_train):
+        # Extract variable names
+        variable_names = list(X_train.columns)
     
-    #     # Compute chi-squared and p-values for each pair of variables
-    #     for i, j in combinations(range(num_variables), 2):
-            
-    #         # Compute KRUSKA-WALLIS H Test
-    #         kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
-            
-    #         # Assign results to kwh_stats and p_values matrices
-    #         kwh_stats[i, j] = kwh
-    #         kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
-    #         p_values[i, j] = p
-    #         p_values[j, i] = p  # Assign to symmetric position in the matrix
+        # Initialize matrices to store KWH-statistic and p-values
+        num_variables = len(variable_names)
+        kwh_stats = np.zeros((num_variables, num_variables))
+        p_values = np.zeros((num_variables, num_variables))
     
-    #     # Create a DataFrame with variable names as index and columns
-    #     kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
-    #     p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+        # Compute KWH-statistic and p-value for each pair of variables
+        for i, j in combinations(range(num_variables), 2):
+            try:
+                # Checks if both columns are identical; KWH cannot run if so
+                if np.array_equal(X_train.iloc[:, i], X_train.iloc[:, j]):
+                    kwh_stats[i, j] = np.nan # Replacing that matrix value with NaN instead of running KWH test
+                    kwh_stats[j, i] = np.nan
+                    p_values[i, j] = np.nan
+                    p_values[j, i] = np.nan
+                else:
+                    # Compute KRUSKA-WALLIS H Test
+                    kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
+                    
+                    # Assign results to kwh_stats and p_values matrices
+                    kwh_stats[i, j] = kwh
+                    kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
+                    p_values[i, j] = p
+                    p_values[j, i] = p  # Assign to symmetric position in the matrix
+            except ValueError as e:
+                print(f"Error: {e}") # if TRY fails, print error 
     
-    #     # Printing the matrix-like output with variable names
-    #     print("\nF-Statistics:")
-    #     print(kwh_stats_df)
-    #     print("\nP-Values:")
-    #     print(p_values_df)
+        # Create a DataFrame with variable names as index and columns
+        kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
+        p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+    
+        # Printing the matrix-like output with variable names
+        print("\nKruskal-Wallis H statistic:")
+        print(kwh_stats_df)
+        print("\nP-Values:")
+        print(p_values_df)
         
-    # KWH_fvf(X_train)
+    KWH_fvf(X_train)
     
 ################## KRUSKAL-WALLIS H Test #######################################
 
