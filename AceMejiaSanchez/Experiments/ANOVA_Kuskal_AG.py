@@ -23,76 +23,212 @@ from sklearn.feature_selection import chi2
 import random
 from scipy.stats import f_oneway
 from itertools import combinations
-################## Import function ######################################################
+from scipy.stats import kruskal
+from scipy.stats import alexandergovern
+################## Import function ############################################
 import sys
 sys.path.append('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/')
 import Measure_Patterns
 
-# ################## ANOVA FvL Re-Write ####################################
+################## Import Data & X_train ######################################
 
-# # Import data
-# df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
+# Import data
+df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
 
-# # Indexing through pre-prepared splitting in stacked_all
-# X_train = df.iloc[:168, :16]
-# # X_test = df.iloc[168:241, :16]
-# # y_train =  df.iloc[:168, 22]
-# # y_test = df.iloc[168:241, 22]
+# Indexing through pre-prepared splitting in stacked_all
+X_train = df.iloc[:168, :8]
+# X_test = df.iloc[168:241, :16]
+# y_train =  df.iloc[:168, 22]
+# y_test = df.iloc[168:241, 22]
 
-# print("\n------------------ ANOVA (Feature vs Label) -----------------------")
+################## ANOVA FvL Re-Write #########################################
 
-# # Finds dependency between all features in X_train & the label in y_train
-# def anova_fvl(X_train, y_train):
+print("\n------------------ ANOVA (Feature vs Label) -----------------------")
+
+# Finds dependency between all features in X_train & the label in y_train
+def anova_fvl(X_train, y_train):
     
-#     # Combining X_train and y_train
-#     df = X_train
-#     df['y_train'] = y_train
+    # Combining X_train and y_train
+    df = X_train
+    df['y_train'] = y_train
 
-#     # Number of features, excluding label
-#     var_count = len(X_train.columns)-1
+    # Number of features, excluding label
+    var_count = len(X_train.columns)-1
 
-#     # Creates an empty array for f-statistic and P-values
-#     results = []
+    # Creates an empty array for f-statistic and P-values
+    # results = []
+    
+    # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
+    siggies = []
 
-#     for i in range(0, var_count):
+    for i in range(0, var_count):
         
-#         # Compute ANOVA
-#         f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
+        # Compute ANOVA
+        f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
         
-#         # Save p-value significance into list
-#         if p_value < 0.05:
-#             significance = "Significant"
-#         else:
-#             significance = "Not Significant"
+        # TEMPORARY: Save p-value significance into list
+        if p_value < 0.05:
+            siggies.append(True)
+        else:
+            siggies.append(False)
+    return siggies
+        
+        # # Save p-value significance into list
+        # if p_value < 0.05:
+        #     significance = "Significant"
+        # else:
+        #     significance = "Not Significant"
            
-#         # Append results to the list
-#         results.append({
-#             "Feature": df.columns[i],
-#             "F-Statistic": f_statistic,
-#             "P-Value": p_value, 
-#             "Significance": significance})
+        # # Append results to the list
+        # results.append({
+        #     "Feature": df.columns[i],
+        #     "F-Statistic": f_statistic,
+        #     "P-Value": p_value, 
+        #     "Significance": significance})
 
-#     # Create a dataFrame from the results
-#     results_df = pd.DataFrame(results)
+    # # Create a dataFrame from the results
+    # results_df = pd.DataFrame(results)
     
-#     # Print the dataFrame
-#     print("Label:", df.columns.values[-1])
-#     print(results_df.to_string(index=False))
+    # # Print the dataFrame
+    # print("Label:", df.columns.values[-1])
+    # print(results_df.to_string(index=False))
 
-# # Testing consistency of ANOVA test
-# for i in range(16, 25, 1):
-#     # Loop through Poisson-distributed categorical features in stacked_all
-#     y_train = df.iloc[:168, i]
+# Testing consistency of ANOVA test
+
+ANOVA_sigs = []
+
+for i in range(16, 25, 1):
+    # Loop through Poisson-distributed categorical features in stacked_all
+    y_train = df.iloc[:168, i]
     
-#     # Run ANOVA
-#     anova_fvl(X_train, y_train)
+    # Run ANOVA
+    ANOVA_sigs.append(anova_fvl(X_train, y_train))
     
+print(ANOVA_sigs)
+
+# Flatten the list of lists
+ANOVA_flat_list = [item for sublist in ANOVA_sigs for item in sublist]
+
+# Count the number of True and False values
+ANOVA_num_true = sum(ANOVA_flat_list)
+ANOVA_num_false = len(ANOVA_flat_list) - ANOVA_num_true
+
+print("Number of True values:", ANOVA_num_true)
+print("Number of False values:", ANOVA_num_false)
+
+
+################## KRUSKAL-WALLIS H Test #######################################
+
+print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
+
+# Finds dependency between all features in X_train & the label in y_train
+def kruskal_fvl(X_train, y_train):
+    
+    # Combining X_train and y_train
+    df = X_train
+    df['y_train'] = y_train
+
+    # Number of features, excluding label
+    var_count = len(X_train.columns)-1
+    
+    # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
+    siggies = []
+
+    for i in range(0, var_count):
+        
+        # Compute KRUSKA-WALLIS H Test
+        kruskal_statistic, p_value = kruskal(df.iloc[:,i], df.iloc[:,-1])
+                                
+        # TEMPORARY: Save p-value significance into list
+        if p_value < 0.05:
+            siggies.append(True)
+        else:
+            siggies.append(False)
+    return siggies
+
+# Testing consistency of ANOVA test
+
+KRUSKAL_sigs = []
+
+for i in range(16, 25, 1):
+    # Loop through Poisson-distributed categorical features in stacked_all
+    y_train = df.iloc[:168, i]
+    
+    # Run ANOVA
+    KRUSKAL_sigs.append(kruskal_fvl(X_train, y_train))
+    
+print(KRUSKAL_sigs)
+
+# Flatten the list of lists
+KRUSKAL_flat_list = [item for sublist in KRUSKAL_sigs for item in sublist]
+
+# Count the number of True and False values
+KRUSKAL_num_true = sum(KRUSKAL_flat_list)
+KRUSKAL_num_false = len(KRUSKAL_flat_list) - KRUSKAL_num_true
+
+print("Number of True values:", KRUSKAL_num_true)
+print("Number of False values:", KRUSKAL_num_false)
+
+################## ALEXANDER-GOVERN Test #######################################
+
+print("\n------------------ ALEXANDER-GOVERN Test (Feature vs Label) -----------------------")
+
+# Finds dependency between all features in X_train & the label in y_train
+def alexandergovern_fvl(X_train, y_train):
+    
+    # Combining X_train and y_train
+    df = X_train
+    df['y_train'] = y_train
+
+    # Number of features, excluding label
+    var_count = len(X_train.columns)-1
+    
+    # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
+    siggies = []
+
+    for i in range(0, var_count):
+        
+        # Compute ALEXANDER-GOVERN Test
+        AG_result = alexandergovern(df.iloc[:,i], df.iloc[:,-1])
+        # Use getattr to select p-value 
+        p_value = getattr(AG_result,'pvalue')
+                       
+        # TEMPORARY: Save p-value significance into list
+        if p_value < 0.05:
+            siggies.append(True)
+        else:
+            siggies.append(False)
+    return siggies
+
+# Testing consistency of ALEXANDER-GOVERN test
+
+AG_sigs = []
+
+for i in range(16, 25, 1):
+    # Loop through Poisson-distributed categorical features in stacked_all
+    y_train = df.iloc[:168, i]
+    
+    # Run ALEXANDER-GOVERN TEST
+    AG_sigs.append(alexandergovern_fvl(X_train, y_train))
+    
+print(AG_sigs)
+
+# Flatten the list of lists
+AG_flat_list = [item for sublist in AG_sigs for item in sublist]
+
+# Count the number of True and False values
+AG_num_true = sum(AG_flat_list)
+AG_num_false = len(AG_flat_list) - AG_num_true
+
+print("Number of True values:", AG_num_true)
+print("Number of False values:", AG_num_false)
+
 ################## Graphing ####################################
 
 # Data
-categories = ['ANOVA', 'Kuskal-Wallis H Test', 'Anderson-Govern']
-sigs = [10, 20, 30]
-no_sigs = [15, 25, 35]
+categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Anderson-Govern']
+sigs = [ANOVA_num_true, KRUSKAL_num_true, AG_num_true]
+no_sigs = [ANOVA_num_false, KRUSKAL_num_false, AG_num_false]
 
 # Number of categories
 n = len(categories)
@@ -114,8 +250,8 @@ bar2 = ax.bar(ind + width/2, no_sigs, width, label='Not Significant')
 
 # Adding labels, title, and legend
 ax.set_xlabel('Tests')
-ax.set_ylabel('Values')
-ax.set_title('Side by Side Bar Chart for Tests')
+ax.set_ylabel('Counts')
+ax.set_title('ANOVA v. Kruskal-Wallis v. Anderson-Govern')
 ax.set_xticks(ind)
 ax.set_xticklabels(categories)
 ax.legend()
