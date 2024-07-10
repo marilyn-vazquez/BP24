@@ -212,87 +212,6 @@ def MeasurePatterns(X_train, y_train, optional=None):
         
     chi_squared_fvl(categorical_df, y_train)
     
-############################# ANOVA (Feature vs Feature) ######################
-    print("\n------------------ANOVA for Features v. Features-----------------------")
-    # Finds dependency between all features in X_train
-    def anova_fvf(X_train):
-            
-        # Extract variable names
-        variable_names = list(X_train.columns)
-    
-        # Initialize matrices to store chi-squared and p-values
-        num_variables = len(variable_names)
-        f_stats = np.zeros((num_variables, num_variables))
-        p_values = np.zeros((num_variables, num_variables))
-    
-        # Compute chi-squared and p-values for each pair of variables
-        for i, j in combinations(range(num_variables), 2):
-    
-            # Compute ANOVA: f-statistics and p-values
-            f, p = f_oneway(X_train.iloc[:, i], X_train.iloc[:, j])
-                
-            # Assign results to f_stats and p_values matrices
-            f_stats[i, j] = f
-            f_stats[j, i] = f  # Assign to symmetric position in the matrix
-            p_values[i, j] = p
-            p_values[j, i] = p  # Assign to symmetric position in the matrix
-    
-        # Create a DataFrame with variable names as index and columns
-        f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
-        p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
-    
-        # Printing the matrix-like output with variable names
-        print("\nF-Statistics:")
-        print(f_stats_df)
-        print("\nP-Values:")
-        print(p_values_df)
-        
-    anova_fvf(X_train)
-    
-############################# ANOVA (Feature vs Label) ######################
-    print("\n------------------ ANOVA (Feature vs Label) -----------------------")
-    
-    # Finds dependency between all features in X_train & the label in y_train
-    def anova_fvl(X_train, y_train):
-        
-        # Combining X_train and y_train
-        df = X_train
-        df['y_train'] = y_train
-    
-        # Number of features, excluding label
-        var_count = len(X_train.columns)-1
-    
-        # Creates an empty array for f-statistic and P-values
-        results = []
-    
-        for i in range(0, var_count):
-            
-            # Compute ANOVA
-            f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
-            
-            # Save p-value significance into list
-            if p_value < 0.05:
-                significance = "Significant"
-            else:
-                significance = "Not Significant"
-               
-            # Append results to the list
-            results.append({
-                "Feature": df.columns[i],
-                "F-Statistic": f_statistic,
-                "P-Value": p_value, 
-                "Significance": significance})
-    
-        # Create a dataFrame from the results
-        results_df = pd.DataFrame(results)
-        
-        # Print the dataFrame
-        print("Label:", df.columns.values[-1])
-        print(results_df.to_string(index=False))
-    
-    # Run ANOVA
-    anova_fvl(X_train, y_train)
-
 ################## KRUSKAL-WALLIS H Test (FvF) #######################################
     
     print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
@@ -385,57 +304,57 @@ def MeasurePatterns(X_train, y_train, optional=None):
     KWH_fvl(X_train, y_train)
 
 ########################## Histogram/Graphing #################################
-    print("------------------------Histogram/Graphing-----------------------------") 
+    # print("------------------------Histogram/Graphing-----------------------------") 
     
-    # Ensure data is 2D
-    if numerical_df.ndim == 1:
-        numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
+    # # Ensure data is 2D
+    # if numerical_df.ndim == 1:
+    #     numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
     
-    # Number of features (columns) in the dataset
-    numerical_num_features = numerical_df.shape[1]
+    # # Number of features (columns) in the dataset
+    # numerical_num_features = numerical_df.shape[1]
     
-    # Loop through each numerical feature
-    for feature_idx in range(numerical_num_features):
-        # Extract the current feature data (column)
-        feature_df = numerical_df.iloc[:, feature_idx]
+    # # Loop through each numerical feature
+    # for feature_idx in range(numerical_num_features):
+    #     # Extract the current feature data (column)
+    #     feature_df = numerical_df.iloc[:, feature_idx]
     
-        # Compute histogram with 10 bins
-        hist, bin_edges = np.histogram(feature_df, bins=10)
+    #     # Compute histogram with 10 bins
+    #     hist, bin_edges = np.histogram(feature_df, bins=10)
     
-        # Print feature number
-        print(f"Feature {feature_idx + 1}:")
+    #     # Print feature number
+    #     print(f"Feature {feature_idx + 1}:")
         
-        # Print bin edges
-        print("Bin Edges:", bin_edges)
+    #     # Print bin edges
+    #     print("Bin Edges:", bin_edges)
     
-        # Store bin heights in a list
-        bin_heights = []
-        bin_heights.extend(hist)
-        print("Array with bin heights:", bin_heights)
+    #     # Store bin heights in a list
+    #     bin_heights = []
+    #     bin_heights.extend(hist)
+    #     print("Array with bin heights:", bin_heights)
     
-        # Store bin probabilities in a list and normalize
-        bin_probs = []
-        bin_probs.extend(hist)
-        bin_probs = np.array(bin_probs) / sum(bin_heights)
-        print("Array with bin probabilities:", bin_probs)
+    #     # Store bin probabilities in a list and normalize
+    #     bin_probs = []
+    #     bin_probs.extend(hist)
+    #     bin_probs = np.array(bin_probs) / sum(bin_heights)
+    #     print("Array with bin probabilities:", bin_probs)
     
-        # Loop through each bin to print range and probabilities
-        for i in range(len(hist)):
-            bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"  # Bin range
-            bin_probability = hist[i] / sum(hist)  # Bin probability
-            print(f"Bin {i + 1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
+    #     # Loop through each bin to print range and probabilities
+    #     for i in range(len(hist)):
+    #         bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"  # Bin range
+    #         bin_probability = hist[i] / sum(hist)  # Bin probability
+    #         print(f"Bin {i + 1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
     
-        # Separator between features for clarity
-        print("\n" + "="*50 + "\n")
+    #     # Separator between features for clarity
+    #     print("\n" + "="*50 + "\n")
     
-    # Calculate and store probabilities for each categorical column
-    print("Proportions for Label for Categorical Columns:")
+    # # Calculate and store probabilities for each categorical column
+    # print("Proportions for Label for Categorical Columns:")
     
-    for column in categorical_df.columns:
-        value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
-        # print(f"Probabilities for Categorical Column {column}:")
-        print(value_counts)
-        print()  # Add an empty line for separation    
+    # for column in categorical_df.columns:
+    #     value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
+    #     # print(f"Probabilities for Categorical Column {column}:")
+    #     print(value_counts)
+    #     print()  # Add an empty line for separation    
         
 ############################ KL Divergence: NOT DONE ####################################
 

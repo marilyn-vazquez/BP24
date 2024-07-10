@@ -28,13 +28,53 @@ sys.path.append("/Users/fabianafazio/Documents/GitHub/BP24/")
 import Measure_Patterns
 
 ################## Import data ################################################
-df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_cancer_data.csv")
+#df = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/lung_cancer_data.csv")
+
+
+################## vehicle dataset ####################################33
+df = pd.read_csv('/Users/fabianafazio/Documents/GitHub/BP24/Fabiana/Data/fraud_oracle.csv')
+#y_train
+y = df["FraudFound_P"]
+y = y.astype('category')
+
+# X_train
+X = df.drop(columns=['FraudFound_P'])
+
+# USE OneHotEncoder to change categorical into binary columns
+from sklearn.preprocessing import OneHotEncoder
+
+# Separate categorical and numerical columns
+categorical_columns = X.select_dtypes(include=['object']).columns
+numerical_columns = X.select_dtypes(include=['int64', 'float64']).columns
+
+# Instantiate the OneHotEncoder
+#encoder = OneHotEncoder(sparse=False)
+encoder = OneHotEncoder(sparse=False, drop='first')
+
+# Fit and transform the categorical columns
+encoded_categorical = encoder.fit_transform(X[categorical_columns])
+
+# Convert the encoded array back to a DataFrame
+encoded_df = pd.DataFrame(encoded_categorical, columns=encoder.get_feature_names_out(categorical_columns))
+
+# Combine the encoded columns with the integer columns
+final_df = pd.concat([encoded_df, X[numerical_columns].reset_index(drop=True)], axis=1)
+
+# Display the final DataFrame
+print(final_df)
+
+
+
 
 ################## Data cleaning ##############################################
 # Whatever changes you make to your data set
 
 ################## Split dataset into X_train and y_train #####################
-X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,1:150], df.iloc[:,-1], test_size=0.2, random_state=42)
+#X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,1:150], df.iloc[:,-1], test_size=0.2, random_state=42)
+
+#  vehicle splitting
+X_train, X_test, y_train, y_test = train_test_split(final_df, y, test_size=0.2, random_state=42)
+
 Measure_Patterns.MeasurePatterns(X_train, y_train)
 
 
