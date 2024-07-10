@@ -25,6 +25,7 @@ from scipy.stats import f_oneway
 from itertools import combinations
 from scipy.stats import kruskal
 from scipy.stats import alexandergovern
+
 ################## Import function ############################################
 import sys
 sys.path.append('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/')
@@ -33,8 +34,7 @@ import Measure_Patterns
 ################## Import Data & X_train ######################################
 
 # Import data
-df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
-
+df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Data/Stacked/stacked_orig.csv")
 # Indexing through pre-prepared splitting in stacked_all
 X_train = df.iloc[:168, :8]
 # X_test = df.iloc[168:241, :8]
@@ -95,223 +95,225 @@ def anova_fvl(X_train, y_train):
 
 # Testing consistency of ANOVA test
 
-# ANOVA_sigs = []
+ANOVA_sigs = []
 
-# for i in range(16, 25, 1):
-#     # Loop through Poisson-distributed categorical features in stacked_all
-#     y_train = df.iloc[:168, i]
+for i in range(16, 25, 1):
+    # Loop through Poisson-distributed categorical features in stacked_all
+    y_train = df.iloc[:168, i]
     
-#     # Run ANOVA
-#     ANOVA_sigs.append(anova_fvl(X_train, y_train))
+    # Run ANOVA
+    ANOVA_sigs.append(anova_fvl(X_train, y_train))
     
-# print(ANOVA_sigs)
+print(ANOVA_sigs)
 
-# # Flatten the list of lists
-# ANOVA_flat_list = [item for sublist in ANOVA_sigs for item in sublist]
+# Flatten the list of lists
+ANOVA_flat_list = [item for sublist in ANOVA_sigs for item in sublist]
 
-# # Count the number of True and False values
-# ANOVA_num_true = sum(ANOVA_flat_list)
-# ANOVA_num_false = len(ANOVA_flat_list) - ANOVA_num_true
+# Count the number of True and False values
+ANOVA_num_true = sum(ANOVA_flat_list)
+ANOVA_num_false = len(ANOVA_flat_list) - ANOVA_num_true
 
-# print("Number of True values:", ANOVA_num_true)
-# print("Number of False values:", ANOVA_num_false)
+print("Number of True values:", ANOVA_num_true)
+print("Number of False values:", ANOVA_num_false)
 
 
-# ################## KRUSKAL-WALLIS H Test (FvL) #######################################
+################## KRUSKAL-WALLIS H Test (FvL) #######################################
 
-# print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
+print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
 
-# # Finds dependency between all features in X_train & the label in y_train
-# def kruskal_fvl(X_train, y_train):
+# Finds dependency between all features in X_train & the label in y_train
+def kruskal_fvl(X_train, y_train):
     
-#     # Combining X_train and y_train
-#     df = X_train
-#     df['y_train'] = y_train
+    # Combining X_train and y_train
+    df = X_train
+    df['y_train'] = y_train
 
-#     # Number of features, excluding label
-#     var_count = len(X_train.columns)-1
+    # Number of features, excluding label
+    var_count = len(X_train.columns)-1
     
-#     # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
-#     siggies = []
+    # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
+    siggies = []
 
-#     for i in range(0, var_count):
-        
-#         # Compute KRUSKA-WALLIS H Test
-#         kruskal_statistic, p_value = kruskal(df.iloc[:,i], df.iloc[:,-1])
-                                
-#         # TEMPORARY: Save p-value significance into list
-#         if p_value < 0.05:
-#             siggies.append(True)
-#         else:
-#             siggies.append(False)
-#     return siggies
-
-# # Testing consistency of ANOVA test
-
-# KRUSKAL_sigs = []
-
-# for i in range(16, 25, 1):
-#     # Loop through Poisson-distributed categorical features in stacked_all
-#     y_train = df.iloc[:168, i]
-    
-#     # Run ANOVA
-#     KRUSKAL_sigs.append(kruskal_fvl(X_train, y_train))
-    
-# print(KRUSKAL_sigs)
-
-# # Flatten the list of lists
-# KRUSKAL_flat_list = [item for sublist in KRUSKAL_sigs for item in sublist]
-
-# # Count the number of True and False values
-# KRUSKAL_num_true = sum(KRUSKAL_flat_list)
-# KRUSKAL_num_false = len(KRUSKAL_flat_list) - KRUSKAL_num_true
-
-# print("Number of True values:", KRUSKAL_num_true)
-# print("Number of False values:", KRUSKAL_num_false)
-
-# ################## ALEXANDER-GOVERN Test #######################################
-
-# print("\n------------------ ALEXANDER-GOVERN Test (Feature vs Label) -----------------------")
-
-# # Finds dependency between all features in X_train & the label in y_train
-# def alexandergovern_fvl(X_train, y_train):
-    
-#     # Combining X_train and y_train
-#     df = X_train
-#     df['y_train'] = y_train
-
-#     # Number of features, excluding label
-#     var_count = len(X_train.columns)-1
-    
-#     # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
-#     siggies = []
-
-#     for i in range(0, var_count):
-        
-#         # Compute ALEXANDER-GOVERN Test
-#         AG_result = alexandergovern(df.iloc[:,i], df.iloc[:,-1])
-#         # Use getattr to select p-value 
-#         p_value = getattr(AG_result,'pvalue')
-                       
-#         # TEMPORARY: Save p-value significance into list
-#         if p_value < 0.05:
-#             siggies.append(True)
-#         else:
-#             siggies.append(False)
-#     return siggies
-
-# # Testing consistency of ALEXANDER-GOVERN test
-
-# AG_sigs = []
-
-# for i in range(16, 25, 1):
-#     # Loop through Poisson-distributed categorical features in stacked_all
-#     y_train = df.iloc[:168, i]
-    
-#     # Run ALEXANDER-GOVERN TEST
-#     AG_sigs.append(alexandergovern_fvl(X_train, y_train))
-    
-# print(AG_sigs)
-
-# # Flatten the list of lists
-# AG_flat_list = [item for sublist in AG_sigs for item in sublist]
-
-# # Count the number of True and False values
-# AG_num_true = sum(AG_flat_list)
-# AG_num_false = len(AG_flat_list) - AG_num_true
-
-# print("Number of True values:", AG_num_true)
-# print("Number of False values:", AG_num_false)
-
-# ################## Graphing ####################################
-
-# # Data
-# categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Anderson-Govern']
-# sigs = [ANOVA_num_true, KRUSKAL_num_true, AG_num_true]
-# no_sigs = [ANOVA_num_false, KRUSKAL_num_false, AG_num_false]
-
-# # Number of categories
-# n = len(categories)
-
-# # X axis locations for the groups
-# ind = np.arange(n)
-
-# # Width of the bars
-# width = 0.35
-
-# # Plotting
-# fig, ax = plt.subplots()
-
-# # Bars for Significant
-# bar1 = ax.bar(ind - width/2, sigs, width, label='Significant')
-
-# # Bars for Not Significant
-# bar2 = ax.bar(ind + width/2, no_sigs, width, label='Not Significant')
-
-# # Adding labels, title, and legend
-# ax.set_xlabel('Tests')
-# ax.set_ylabel('Counts')
-# ax.set_title('GAUSSIAN: ANOVA v. Kruskal-Wallis v. Anderson-Govern')
-# ax.set_xticks(ind)
-# ax.set_xticklabels(categories)
-# ax.legend()
-
-# # Show plot
-# plt.show()
-
-################## KRUSKAL-WALLIS H Test: Further Investigation #######################################
-
-### Creating Scatterplot
-
-# Assigning variables to graph
-x = df.iloc[:,13] # Uniform var
-y = df.iloc[:,15] # Uniform var
-z = df.iloc[:, 24] # Poisson var
-# kruskal(df.iloc[:,1], df.iloc[:,22])
-
-plt.figure(figsize=(8, 6))
-scatter = plt.scatter(x, y, c=z, cmap='viridis', alpha=0.75)
-plt.colorbar(scatter, label='Intensity')  # Add colorbar indicating intensity
-
-plt.title('Scatter plot with color based on a third variable')
-plt.xlabel('X-axis')
-plt.ylabel('Y-axis')
-plt.grid(True)
-plt.show()
-
-################## KRUSKAL-WALLIS H Test (FvF) #######################################
-
-print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
-# Determines if all features in X_train have same mean via ranks
-def KWH_fvf(X_train):
-        
-    # Extract variable names
-    variable_names = list(X_train.columns)
-
-    # Initialize matrices to store chi-squared and p-values
-    num_variables = len(variable_names)
-    kwh_stats = np.zeros((num_variables, num_variables))
-    p_values = np.zeros((num_variables, num_variables))
-
-    # Compute chi-squared and p-values for each pair of variables
-    for i, j in combinations(range(num_variables), 2):
+    for i in range(0, var_count):
         
         # Compute KRUSKA-WALLIS H Test
-        kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
+        kruskal_statistic, p_value = kruskal(df.iloc[:,i], df.iloc[:,-1])
+                                
+        # TEMPORARY: Save p-value significance into list
+        if p_value < 0.05:
+            siggies.append(True)
+        else:
+            siggies.append(False)
+    return siggies
+
+# Testing consistency of ANOVA test
+
+KRUSKAL_sigs = []
+
+for i in range(16, 25, 1):
+    # Loop through Poisson-distributed categorical features in stacked_all
+    y_train = df.iloc[:168, i]
+    
+    # Run ANOVA
+    KRUSKAL_sigs.append(kruskal_fvl(X_train, y_train))
+    
+print(KRUSKAL_sigs)
+
+# Flatten the list of lists
+KRUSKAL_flat_list = [item for sublist in KRUSKAL_sigs for item in sublist]
+
+# Count the number of True and False values
+KRUSKAL_num_true = sum(KRUSKAL_flat_list)
+KRUSKAL_num_false = len(KRUSKAL_flat_list) - KRUSKAL_num_true
+
+print("Number of True values:", KRUSKAL_num_true)
+print("Number of False values:", KRUSKAL_num_false)
+
+################## ALEXANDER-GOVERN Test #######################################
+
+print("\n------------------ ALEXANDER-GOVERN Test (Feature vs Label) -----------------------")
+
+# Finds dependency between all features in X_train & the label in y_train
+def alexandergovern_fvl(X_train, y_train):
+    
+    # Combining X_train and y_train
+    df = X_train
+    df['y_train'] = y_train
+
+    # Number of features, excluding label
+    var_count = len(X_train.columns)-1
+    
+    # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
+    siggies = []
+
+    for i in range(0, var_count):
         
-        # Assign results to kwh_stats and p_values matrices
-        kwh_stats[i, j] = kwh
-        kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
-        p_values[i, j] = p
-        p_values[j, i] = p  # Assign to symmetric position in the matrix
+        # Compute ALEXANDER-GOVERN Test
+        AG_result = alexandergovern(df.iloc[:,i], df.iloc[:,-1])
+        # Use getattr to select p-value 
+        p_value = getattr(AG_result,'pvalue')
+                       
+        # TEMPORARY: Save p-value significance into list
+        if p_value < 0.05:
+            siggies.append(True)
+        else:
+            siggies.append(False)
+    return siggies
 
-    # Create a DataFrame with variable names as index and columns
-    kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
-    p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+# Testing consistency of ALEXANDER-GOVERN test
 
-    # Printing the matrix-like output with variable names
-    print("\nF-Statistics:")
-    print(kwh_stats_df)
-    print("\nP-Values:")
-    print(p_values_df)
+AG_sigs = []
+
+for i in range(16, 25, 1):
+    # Loop through Poisson-distributed categorical features in stacked_all
+    y_train = df.iloc[:168, i]
+    
+    # Run ALEXANDER-GOVERN TEST
+    AG_sigs.append(alexandergovern_fvl(X_train, y_train))
+    
+print(AG_sigs)
+
+# Flatten the list of lists
+AG_flat_list = [item for sublist in AG_sigs for item in sublist]
+
+# Count the number of True and False values
+AG_num_true = sum(AG_flat_list)
+AG_num_false = len(AG_flat_list) - AG_num_true
+
+print("Number of True values:", AG_num_true)
+print("Number of False values:", AG_num_false)
+
+################## Graphing ####################################
+
+# Data
+categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Anderson-Govern']
+sigs = [ANOVA_num_true, KRUSKAL_num_true, AG_num_true]
+no_sigs = [ANOVA_num_false, KRUSKAL_num_false, AG_num_false]
+
+# Number of categories
+n = len(categories)
+
+# X axis locations for the groups
+ind = np.arange(n)
+
+# Width of the bars
+width = 0.35
+
+# Plotting
+fig, ax = plt.subplots()
+
+# Bars for Significant
+bar1 = ax.bar(ind - width/2, sigs, width, label='Significant', color='skyblue')
+
+# Bars for Not Significant
+bar2 = ax.bar(ind + width/2, no_sigs, width, label='Not Significant', color='salmon')
+
+# Adding labels, title, and legend
+ax.set_xlabel('Tests')
+ax.set_ylabel('Significance Counts')
+ax.set_title('ANOVA v. KWH Test v. AG Test\n on GAUSSIAN Columns & POISSON Label')
+ax.set_xticks(ind)
+ax.set_xticklabels(categories)
+ax.legend()
+
+# Save plot
+plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/ANOVA_Alts_Gaussian.png', dpi=300)
+
+# Show plot
+plt.show() 
+# ################## KRUSKAL-WALLIS H Test: Further Investigation #######################################
+
+# ### Creating Scatterplot
+
+# # Assigning variables to graph
+# x = df.iloc[:,13] # Uniform var
+# y = df.iloc[:,15] # Uniform var
+# z = df.iloc[:, 24] # Poisson var
+# # kruskal(df.iloc[:,1], df.iloc[:,22])
+
+# plt.figure(figsize=(8, 6))
+# scatter = plt.scatter(x, y, c=z, cmap='viridis', alpha=0.75)
+# plt.colorbar(scatter, label='Intensity')  # Add colorbar indicating intensity
+
+# plt.title('Scatter plot with color based on a third variable')
+# plt.xlabel('X-axis')
+# plt.ylabel('Y-axis')
+# plt.grid(True)
+# plt.show()
+
+# ################## KRUSKAL-WALLIS H Test (FvF) #######################################
+
+# print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
+# # Determines if all features in X_train have same mean via ranks
+# def KWH_fvf(X_train):
+        
+#     # Extract variable names
+#     variable_names = list(X_train.columns)
+
+#     # Initialize matrices to store chi-squared and p-values
+#     num_variables = len(variable_names)
+#     kwh_stats = np.zeros((num_variables, num_variables))
+#     p_values = np.zeros((num_variables, num_variables))
+
+#     # Compute chi-squared and p-values for each pair of variables
+#     for i, j in combinations(range(num_variables), 2):
+        
+#         # Compute KRUSKA-WALLIS H Test
+#         kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
+        
+#         # Assign results to kwh_stats and p_values matrices
+#         kwh_stats[i, j] = kwh
+#         kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
+#         p_values[i, j] = p
+#         p_values[j, i] = p  # Assign to symmetric position in the matrix
+
+#     # Create a DataFrame with variable names as index and columns
+#     kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
+#     p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+
+#     # Printing the matrix-like output with variable names
+#     print("\nF-Statistics:")
+#     print(kwh_stats_df)
+#     print("\nP-Values:")
+#     print(p_values_df)
     
