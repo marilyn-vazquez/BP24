@@ -226,7 +226,7 @@ print("Number of False values:", AG_num_false)
 ################## Graphing ####################################
 
 # Data
-categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Anderson-Govern']
+categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Alexander-Govern']
 sigs = [ANOVA_num_true, KRUSKAL_num_true, AG_num_true]
 no_sigs = [ANOVA_num_false, KRUSKAL_num_false, AG_num_false]
 
@@ -251,7 +251,7 @@ bar2 = ax.bar(ind + width/2, no_sigs, width, label='Not Significant', color='sal
 # Adding labels, title, and legend
 ax.set_xlabel('Tests')
 ax.set_ylabel('Significance Counts')
-ax.set_title('ANOVA v. KWH Test v. AG Test\n on GAUSSIAN Columns & POISSON Label')
+# ax.set_title('ANOVA v. KWH Test v. AG Test\n on GAUSSIAN Columns & POISSON Label')
 ax.set_xticks(ind)
 ax.set_xticklabels(categories)
 ax.legend()
