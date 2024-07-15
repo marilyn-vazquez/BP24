@@ -44,7 +44,7 @@ if optional is not provided, then the program will assume that the column has in
 #################### DO NOT UNCOMMENT!!!!!!!! #################################
 
 # Function Measure_Patterns begins here!
-def MeasurePatterns(X_train, y_train, optional=None):
+def FakePatterns(X_train, y_train, optional=None):
     
     # Initialize empty dataframes for numerical and categorical data
     numerical_df = pd.DataFrame()
@@ -212,6 +212,87 @@ def MeasurePatterns(X_train, y_train, optional=None):
         
     chi_squared_fvl(categorical_df, y_train)
     
+############################# ANOVA (Feature vs Feature) ######################
+    print("\n------------------ANOVA for Features v. Features-----------------------")
+    # Finds dependency between all features in X_train
+    def anova_fvf(X_train):
+            
+        # Extract variable names
+        variable_names = list(X_train.columns)
+    
+        # Initialize matrices to store chi-squared and p-values
+        num_variables = len(variable_names)
+        f_stats = np.zeros((num_variables, num_variables))
+        p_values = np.zeros((num_variables, num_variables))
+    
+        # Compute chi-squared and p-values for each pair of variables
+        for i, j in combinations(range(num_variables), 2):
+    
+            # Compute ANOVA: f-statistics and p-values
+            f, p = f_oneway(X_train.iloc[:, i], X_train.iloc[:, j])
+                
+            # Assign results to f_stats and p_values matrices
+            f_stats[i, j] = f
+            f_stats[j, i] = f  # Assign to symmetric position in the matrix
+            p_values[i, j] = p
+            p_values[j, i] = p  # Assign to symmetric position in the matrix
+    
+        # Create a DataFrame with variable names as index and columns
+        f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
+        p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+    
+        # Printing the matrix-like output with variable names
+        print("\nF-Statistics:")
+        print(f_stats_df)
+        print("\nP-Values:")
+        print(p_values_df)
+        
+    anova_fvf(X_train)
+    
+############################# ANOVA (Feature vs Label) ######################
+    print("\n------------------ ANOVA (Feature vs Label) -----------------------")
+    
+    # Finds dependency between all features in X_train & the label in y_train
+    def anova_fvl(X_train, y_train):
+        
+        # Combining X_train and y_train
+        df = X_train
+        df['y_train'] = y_train
+    
+        # Number of features, excluding label
+        var_count = len(X_train.columns)-1
+    
+        # Creates an empty array for f-statistic and P-values
+        results = []
+    
+        for i in range(0, var_count):
+            
+            # Compute ANOVA
+            f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
+            
+            # Save p-value significance into list
+            if p_value < 0.05:
+                significance = "Significant"
+            else:
+                significance = "Not Significant"
+               
+            # Append results to the list
+            results.append({
+                "Feature": df.columns[i],
+                "F-Statistic": f_statistic,
+                "P-Value": p_value, 
+                "Significance": significance})
+    
+        # Create a dataFrame from the results
+        results_df = pd.DataFrame(results)
+        
+        # Print the dataFrame
+        print("Label:", df.columns.values[-1])
+        print(results_df.to_string(index=False))
+    
+    # Run ANOVA
+    anova_fvl(X_train, y_train)
+    
 ################## KRUSKAL-WALLIS H Test (FvF) #######################################
     
     print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
@@ -366,4 +447,4 @@ def MeasurePatterns(X_train, y_train, optional=None):
     # optional_test.append(bool(random.getrandbits(1)))
 
 # Call the measure_patterns function
-# Measure_Patterns(X_train, y_train, optional=optional_test)
+# FakePatterns(X_train, y_train, optional=optional_test)
