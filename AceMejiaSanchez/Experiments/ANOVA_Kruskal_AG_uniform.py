@@ -28,7 +28,7 @@ from scipy.stats import alexandergovern
 ################## Import function ############################################
 import sys
 sys.path.append('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/')
-import Measure_Patterns
+import Fake_Patterns
 
 ################## Import Data & X_train ######################################
 
@@ -36,12 +36,12 @@ import Measure_Patterns
 df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Data/Stacked/stacked_orig.csv")
 
 # Indexing through pre-prepared splitting in stacked_all
-X_train = df.iloc[:168, 9:16]
+X_train = df.iloc[:168, 9:16] # Uniform (DO NOT CHANGE)
 # X_test = df.iloc[168:241, 9:16]
 # y_train =  df.iloc[:168, 22]
 # y_test = df.iloc[168:241, 22]
 
-################## ANOVA FvL Re-Write #########################################
+################## ANOVA #########################################
 
 print("\n------------------ ANOVA (Feature vs Label) -----------------------")
 
@@ -58,6 +58,7 @@ def anova_fvl(X_train, y_train):
     # Creates an empty array for f-statistic and P-values
     # results = []
     
+    
     # TEMPORARY: Creates an empty array for tracking SIGNIFICANT counts
     siggies = []
 
@@ -71,27 +72,8 @@ def anova_fvl(X_train, y_train):
             siggies.append(True)
         else:
             siggies.append(False)
-    return siggies
-        
-        # # Save p-value significance into list
-        # if p_value < 0.05:
-        #     significance = "Significant"
-        # else:
-        #     significance = "Not Significant"
-           
-        # # Append results to the list
-        # results.append({
-        #     "Feature": df.columns[i],
-        #     "F-Statistic": f_statistic,
-        #     "P-Value": p_value, 
-        #     "Significance": significance})
-
-    # # Create a dataFrame from the results
-    # results_df = pd.DataFrame(results)
     
-    # # Print the dataFrame
-    # print("Label:", df.columns.values[-1])
-    # print(results_df.to_string(index=False))
+    return siggies
 
 # Testing consistency of ANOVA test
 
@@ -101,13 +83,19 @@ for i in range(16, 25, 1):
     # Loop through Poisson-distributed categorical features in stacked_all
     y_train = df.iloc[:168, i]
     
-    # Run ANOVA
-    ANOVA_sigs.append(anova_fvl(X_train, y_train))
+    # Run ANOVA & keep track of Poisson label & significants list
+    ANOVA_sigs.append({
+        "Poisson Label": i,
+        "Significants List": anova_fvl(X_train, y_train)})
     
-print(ANOVA_sigs)
+from pprint import pprint
+pprint(ANOVA_sigs)
 
-# Flatten the list of lists
-ANOVA_flat_list = [item for sublist in ANOVA_sigs for item in sublist]
+# Extract and flatten the 'Significants List' values
+ANOVA_flat_list = [value for item in ANOVA_sigs for value in item['Significants List']]
+
+# Sum the flattened list
+total_sum = sum(ANOVA_flat_list)
 
 # Count the number of True and False values
 ANOVA_num_true = sum(ANOVA_flat_list)
@@ -116,8 +104,7 @@ ANOVA_num_false = len(ANOVA_flat_list) - ANOVA_num_true
 print("Number of True values:", ANOVA_num_true)
 print("Number of False values:", ANOVA_num_false)
 
-
-################## KRUSKAL-WALLIS H Test #######################################
+################## KRUSKAL-WALLIS H Test (FvL) #######################################
 
 print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
 
@@ -146,7 +133,7 @@ def kruskal_fvl(X_train, y_train):
             siggies.append(False)
     return siggies
 
-# Testing consistency of ANOVA test
+# Testing consistency of KRUSKAL test
 
 KRUSKAL_sigs = []
 
@@ -155,12 +142,15 @@ for i in range(16, 25, 1):
     y_train = df.iloc[:168, i]
     
     # Run ANOVA
-    KRUSKAL_sigs.append(kruskal_fvl(X_train, y_train))
-    
-print(KRUSKAL_sigs)
+    KRUSKAL_sigs.append({
+        "Poisson Label": i,
+        "Significants List": kruskal_fvl(X_train, y_train)})
+   
+from pprint import pprint
+pprint(KRUSKAL_sigs)
 
 # Flatten the list of lists
-KRUSKAL_flat_list = [item for sublist in KRUSKAL_sigs for item in sublist]
+KRUSKAL_flat_list = [value for item in KRUSKAL_sigs for value in item['Significants List']]
 
 # Count the number of True and False values
 KRUSKAL_num_true = sum(KRUSKAL_flat_list)
@@ -209,12 +199,15 @@ for i in range(16, 25, 1):
     y_train = df.iloc[:168, i]
     
     # Run ALEXANDER-GOVERN TEST
-    AG_sigs.append(alexandergovern_fvl(X_train, y_train))
+    AG_sigs.append({
+        "Poisson Label": i,
+        "Significants List": alexandergovern_fvl(X_train, y_train)})
     
-print(AG_sigs)
+from pprint import pprint
+pprint(AG_sigs)
 
-# Flatten the list of lists
-AG_flat_list = [item for sublist in AG_sigs for item in sublist]
+# Extract and flatten the 'Significants List' values
+AG_flat_list = [value for item in AG_sigs for value in item['Significants List']]
 
 # Count the number of True and False values
 AG_num_true = sum(AG_flat_list)
@@ -261,3 +254,40 @@ plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Image
 
 # Show plot
 plt.show() 
+
+################## KRUSKAL-WALLIS H Test: Further Investigation #######################################
+
+### Creating Scatterplot
+
+# Assigning variables to graph: KWH's NOT SIGNIFICANT
+x = df.iloc[:, 10] # Uniform var
+y = df.iloc[:,11] # Uniform var
+z = df.iloc[:, 19] # Poisson var
+
+# # Assigning variables to graph: KWH's SIGNIFICANT
+# x = df.iloc[:, 10] # Uniform var
+# y = df.iloc[:, 11] # Uniform var
+# z = df.iloc[:, 16] # Poisson var
+
+# # Assigning variables to graph: ONLY SIGNIFICANT COMBO
+# x = df.iloc[:, 10] # Uniform var
+# y = df.iloc[:, 11] # Uniform var
+# z = df.iloc[:, 24] # Poisson var
+
+plt.figure(figsize=(8, 6))
+scatter = plt.scatter(x, y, c=z, cmap='viridis', edgecolors="black", alpha=0.75)
+#plt.colorbar(scatter, label='Intensity')  # Add colorbar indicating intensity
+
+plt.title('Scatter plot comparing UNIFORM Columns v. POISSON LABEL')
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.grid(True)
+
+# Save plot
+#plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/scatterplot_UNIFORMS_v_Poisson_KWH_NOT_SIGNIFICANT.png', dpi=300)
+#plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/scatterplot_UNIFORMS_v_Poisson_KWH_SIGNIFICANT.png', dpi=300)
+#plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/scatterplot_UNIFORMS_v_Poisson_ONLY_SIGNIFICANT_COMBO.png', dpi=300)
+
+
+plt.show()
+
