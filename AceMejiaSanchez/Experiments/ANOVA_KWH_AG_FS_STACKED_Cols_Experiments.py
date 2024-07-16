@@ -548,7 +548,7 @@ plt.figure(figsize=(8, 6))
 scatter = plt.scatter(x, y, c=z, cmap='viridis', edgecolors="black", alpha=0.75)
 #plt.colorbar(scatter, label='Intensity')  # Add colorbar indicating intensity
 
-plt.title('Scatter plot comparing UNIFORM Columns v. POISSON LABEL')
+plt.title('Scatter plot comparing UNIFORM/GAUSSIAN Columns v. POISSON LABEL')
 plt.xlabel('X-axis')
 plt.ylabel('Y-axis')
 plt.grid(True)
