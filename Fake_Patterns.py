@@ -20,6 +20,8 @@ from scipy.stats import kruskal
 The function Measure_Patterns has 3 parameters: X_train, y_train, optional
 optional will check if the columns selected is categorical (integers and strings) or numerical (float)
 if optional is not provided, then the program will assume that the column has integers values, therefore it will be considered categorical
+optional: a boolean list where TRUE indicates a CATEGORICAL variable 
+
 """
 
 # STEPS TO DO IN A     SEPARATE     FILE:
@@ -76,15 +78,15 @@ def FakePatterns(X_train, y_train, optional=None):
             # For all the values in optional
             for i in range(len(optional)):
                 if optional[i] == True:
-                    # Save numerical column in numerical list
-                    numerical.append(X_train.iloc[:,i])
-                    # Save numerical column name
-                    numerical_colnames.append(X_train.columns[i]) 
-                else: 
                     # Save categorical column in numerical list
                     categorical.append(X_train.iloc[:,i])
                     # Save categorical column name
                     categorical_colnames.append(X_train.columns[i])
+                else: 
+                    # Save numerical column in numerical list
+                    numerical.append(X_train.iloc[:,i])
+                    # Save numerical column name
+                    numerical_colnames.append(X_train.columns[i]) 
             # Turn transposed arrays into dataframes
             numerical_df = pd.DataFrame(np.transpose(numerical))
             categorical_df = pd.DataFrame(np.transpose(categorical))
@@ -437,14 +439,5 @@ def FakePatterns(X_train, y_train, optional=None):
     #     print(value_counts)
     #     print()  # Add an empty line for separation    
         
-############################ KL Divergence: NOT DONE ####################################
 
 
-############################ Testing optional argument ####################################
-# optional_test = []
-
-# for i in range(151):
-    # optional_test.append(bool(random.getrandbits(1)))
-
-# Call the measure_patterns function
-# FakePatterns(X_train, y_train, optional=optional_test)

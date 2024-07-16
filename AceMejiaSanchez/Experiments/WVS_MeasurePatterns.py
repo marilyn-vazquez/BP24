@@ -27,7 +27,7 @@ from scipy.stats import kruskal
 ################## Import function ######################################################
 import sys
 sys.path.append('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/')
-import Measure_Patterns
+import Fake_Patterns
 
 ################## Import data ######################################################
 df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/SIAM Simons Summer Opportunity/Datasets/WVS_Cross-National_Wave_7_csv_v6_0.csv")
@@ -147,151 +147,12 @@ df_shape = df.shape
 print("Old Shape:", old_shape)
 print("New Shape:", new_shape)
 
+print(df.dtypes)   
+
 ################# Split dataset into X_train and y_train ####################################
 X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,start_col_index:-1].drop(columns=['Q46']), df.iloc[:,label_index], test_size=0.2, random_state=42)
 
 ################# Running Measure_Patterns() ####################################
-Measure_Patterns.MeasurePatterns(X_train, y_train)
+#Fake_Patterns.FakePatterns(X_train, y_train)
 
-################## ANOVA FvF Re-Write ####################################
 
-# print("\n------------------ANOVA for Features v. Features-----------------------")
-# # Finds dependency between all features in X_train
-# def anova_fvf(X_train):
-        
-#     # Extract variable names
-#     variable_names = list(X_train.columns)
-
-#     # Initialize matrices to store chi-squared and p-values
-#     num_variables = len(variable_names)
-#     f_stats = np.zeros((num_variables, num_variables))
-#     p_values = np.zeros((num_variables, num_variables))
-
-#     # Compute chi-squared and p-values for each pair of variables
-#     for i, j in combinations(range(num_variables), 2):
-
-#         # Compute ANOVA: f-statistics and p-values
-#         f, p = f_oneway(X_train.iloc[:, i], X_train.iloc[:, j])
-            
-#         # Assign results to f_stats and p_values matrices
-#         f_stats[i, j] = f
-#         f_stats[j, i] = f  # Assign to symmetric position in the matrix
-#         p_values[i, j] = p
-#         p_values[j, i] = p  # Assign to symmetric position in the matrix
-
-#     # Create a DataFrame with variable names as index and columns
-#     f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
-#     p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
-
-#     # Printing the matrix-like output with variable names
-#     print("\nF-Statistics:")
-#     print(f_stats_df)
-#     print("\nP-Values:")
-#     print(p_values_df)
-    
-
-################## ANOVA FvL Re-Write ####################################
-
-# Import data
-# df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Sanity Checks/Demos/stacked_all.csv")
-
-# Indexing through pre-prepared splitting in stacked_all
-# X_train = df.iloc[:168, :9]
-# X_test = df.iloc[168:241, :9]
-# y_train =  df.iloc[:168, 22]
-# y_test = df.iloc[168:241, 22]
-
-# print("\n------------------ ANOVA (Feature vs Label) -----------------------")
-
-# # Finds dependency between all features in X_train & the label in y_train
-# def anova_fvl(X_train, y_train):
-    
-#     # Combining X_train and y_train
-#     df = X_train
-#     df['y_train'] = y_train
-
-#     # Number of features, excluding label
-#     var_count = len(X_train.columns)-1
-
-#     # Creates an empty array for f-statistic and P-values
-#     results = []
-
-#     for i in range(0, var_count):
-        
-#         # Compute ANOVA
-#         f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
-        
-#         # Save p-value significance into list
-#         if p_value < 0.05:
-#             significance = "Significant"
-#         else:
-#             significance = "Not Significant"
-           
-#         # Append results to the list
-#         results.append({
-#             "Feature": df.columns[i],
-#             "F-Statistic": f_statistic,
-#             "P-Value": p_value, 
-#             "Significance": significance})
-
-#     # Create a dataFrame from the results
-#     results_df = pd.DataFrame(results)
-    
-#     # Print the dataFrame
-#     print("Label:", df.columns.values[-1])
-#     print(results_df.to_string(index=False))
-
-# # Testing consistency of ANOVA test
-# for i in range(16, 25, 1):
-#     # Loop through Poisson-distributed categorical features in stacked_all
-#     y_train = df.iloc[:168, i]
-    
-#     # Run ANOVA
-#     anova_fvl(X_train, y_train)
-    
-################## KRUSKAL-WALLIS H Test (FvF) #######################################
-
-# print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
-# # Determines if all features in X_train have same mean via ranks
-# def KWH_fvf(X_train):
-#     # Extract variable names
-#     variable_names = list(X_train.columns)
-
-#     # Initialize matrices to store KWH-statistic and p-values
-#     num_variables = len(variable_names)
-#     kwh_stats = np.zeros((num_variables, num_variables))
-#     p_values = np.zeros((num_variables, num_variables))
-
-#     # Compute KWH-statistic and p-value for each pair of variables
-#     for i, j in combinations(range(num_variables), 2):
-#         try:
-#             # Checks if both columns are identical; KWH cannot run if so
-#             if np.array_equal(X_train.iloc[:, i], X_train.iloc[:, j]):
-#                 kwh_stats[i, j] = np.nan # Replacing that matrix value with NaN instead of running KWH test
-#                 kwh_stats[j, i] = np.nan
-#                 p_values[i, j] = np.nan
-#                 p_values[j, i] = np.nan
-#             else:
-#                 # Compute KRUSKA-WALLIS H Test
-#                 kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
-                
-#                 # Assign results to kwh_stats and p_values matrices
-#                 kwh_stats[i, j] = kwh
-#                 kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
-#                 p_values[i, j] = p
-#                 p_values[j, i] = p  # Assign to symmetric position in the matrix
-#         except ValueError as e:
-#             print(f"Error: {e}") # if TRY fails, print error 
-
-#     # Create a DataFrame with variable names as index and columns
-#     kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
-#     p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
-
-#     # Printing the matrix-like output with variable names
-#     print("\nKruskal-Wallis H statistic:")
-#     print(kwh_stats_df)
-#     print("\nP-Values:")
-#     print(p_values_df)
-    
-# KWH_fvf(X_train)
-    
