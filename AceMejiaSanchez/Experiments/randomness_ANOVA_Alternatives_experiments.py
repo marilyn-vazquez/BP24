@@ -216,61 +216,61 @@ AG_bin_gaus_sigs_FALSE = len(AG_bin_gaus_sigs) - AG_bin_gaus_sigs_TRUE
 AG_bin_uni_sigs_TRUE = sum(AG_bin_uni_sigs) # BIN & UNIFORM
 AG_bin_uni_sigs_FALSE = len(AG_bin_uni_sigs) - AG_bin_uni_sigs_TRUE
 
-# ################## Graphing ######################################################
+################## Graphing ######################################################
 
-# # Data
-# categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Alexander-Govern']
-# bin_gauss_SIGS = [ANOVA_bin_gaus_sigs_TRUE, KWH_bin_gaus_sigs_TRUE, AG_bin_gaus_sigs_TRUE]
-# bin_gauss_NO_SIGS = [ANOVA_bin_gaus_sigs_FALSE, KWH_bin_gaus_sigs_FALSE, AG_bin_gaus_sigs_FALSE]
+# Data
+categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Alexander-Govern']
+bin_gauss_SIGS = [ANOVA_bin_gaus_sigs_TRUE, KWH_bin_gaus_sigs_TRUE, AG_bin_gaus_sigs_TRUE]
+bin_gauss_NO_SIGS = [ANOVA_bin_gaus_sigs_FALSE, KWH_bin_gaus_sigs_FALSE, AG_bin_gaus_sigs_FALSE]
 
-# bin_uniform_SIGS = [ANOVA_bin_uni_sigs_TRUE, KWH_bin_uni_sigs_TRUE, AG_bin_uni_sigs_TRUE]
-# bin_uniform_NO_SIGS = [ANOVA_bin_uni_sigs_FALSE, KWH_bin_uni_sigs_FALSE, AG_bin_uni_sigs_FALSE]
+bin_uniform_SIGS = [ANOVA_bin_uni_sigs_TRUE, KWH_bin_uni_sigs_TRUE, AG_bin_uni_sigs_TRUE]
+bin_uniform_NO_SIGS = [ANOVA_bin_uni_sigs_FALSE, KWH_bin_uni_sigs_FALSE, AG_bin_uni_sigs_FALSE]
 
-# # Number of categories
-# n = len(categories)
+# Number of categories
+n = len(categories)
 
-# # X axis locations for the groups
-# ind = np.arange(n)
+# X axis locations for the groups
+ind = np.arange(n)
 
-# # Width of the bars
-# width = 0.35
+# Width of the bars
+width = 0.35
 
-# ##################### PLOT 1 ############################################
+##################### PLOT 1 ############################################
 
-# # Plotting
-# fig, ax = plt.subplots()
+# Plotting
+fig, ax = plt.subplots()
 
-# # Bars for Significant & Not Significant for each combo
-# bar1 = ax.bar(ind - width/2, bin_gauss_SIGS, width, label='Significant', color='skyblue')
-# bar2 = ax.bar(ind + width/2, bin_gauss_NO_SIGS, width, label='Not Significant', color='salmon')
+# Bars for Significant & Not Significant for each combo
+bar1 = ax.bar(ind - width/2, bin_gauss_SIGS, width, label='Significant', color='skyblue')
+bar2 = ax.bar(ind + width/2, bin_gauss_NO_SIGS, width, label='Not Significant', color='salmon')
 
-# # Adding labels, title, and legend
-# ax.set_xlabel('Tests')
-# ax.set_ylabel('Significance Counts')
-# ax.set_title('ANOVA v. KWH Test v. AG Test\n on RANDOM LABEL & GAUSSIAN columns')
-# ax.set_xticks(ind)
-# ax.set_xticklabels(categories)
-# ax.legend()
+# Adding labels, title, and legend
+ax.set_xlabel('Tests')
+ax.set_ylabel('Significance Counts')
+ax.set_title('ANOVA v. KWH Test v. AG Test\n on RANDOM LABEL & GAUSSIAN columns')
+ax.set_xticks(ind)
+ax.set_xticklabels(categories)
+ax.legend()
 
-# # Show plot
-# plt.show() 
+# Show plot
+plt.show() 
 
-# ##################### PLOT 2 ############################################
+##################### PLOT 2 ############################################
 
-# # Plotting
-# fig, ax = plt.subplots()
+# Plotting
+fig, ax = plt.subplots()
 
-# # Bars for Significant & Not Significant for each combo
-# bar3 = ax.bar(ind - width/2, bin_uniform_SIGS, width, label='Significant', color='skyblue')
-# bar4 = ax.bar(ind + width/2, bin_uniform_NO_SIGS, width, label='Not Significant', color='salmon')
+# Bars for Significant & Not Significant for each combo
+bar3 = ax.bar(ind - width/2, bin_uniform_SIGS, width, label='Significant', color='skyblue')
+bar4 = ax.bar(ind + width/2, bin_uniform_NO_SIGS, width, label='Not Significant', color='salmon')
 
-# # Adding labels, title, and legend
-# ax.set_xlabel('Tests')
-# ax.set_ylabel('Significance Counts')
-# ax.set_title('ANOVA v. KWH Test v. AG Test\n on RANDOM LABEL & UNIFORM columns')
-# ax.set_xticks(ind)
-# ax.set_xticklabels(categories)
-# ax.legend()
+# Adding labels, title, and legend
+ax.set_xlabel('Tests')
+ax.set_ylabel('Significance Counts')
+ax.set_title('ANOVA v. KWH Test v. AG Test\n on RANDOM LABEL & UNIFORM columns')
+ax.set_xticks(ind)
+ax.set_xticklabels(categories)
+ax.legend()
 
-# # Show plot
-# plt.show() 
+# Show plot
+plt.show() 
