@@ -18,6 +18,7 @@ import pandas as pd
 from numpy import linalg
 from itertools import combinations
 from scipy import stats
+import matplotlib.pyplot as plt
 
 # STEPS TO DO IN A     SEPARATE     FILE:
     
@@ -97,10 +98,101 @@ def FakeDifferences(data1, data2, optional=None):
     print(categorical_df2)
 
 
+    def feat_dist(numerical_df1, categorical_df1, numerical_df2, categorical_df2):
+        
+        def generate_distribution_histogram(dataframe, column_name, number_bins, 
+                                    alpha, color, edgecolor, label_name,
+                                    density = True,
+                                    title='', x_axis_label='', y_axis_label=''):
+    
+            plt.hist(dataframe[column_name], bins = number_bins, alpha = alpha, color = color, 
+                 edgecolor = edgecolor, label = label_name, density = density)
+            plt.title(title)
+            plt.xlabel(x_axis_label)
+            plt.ylabel(y_axis_label)
+            plt.legend(loc='upper left')
+    
 
+        def mann_whitney_u_test(distribution_1, distribution_2):
 
+            u_statistic, p_value = stats.mannwhitneyu(distribution_1, distribution_2)
+        
+            #Print the results
+            print('U-Statistic: ', u_statistic)
+            print('p-value: ', p_value)
+            print()
+            
+        # Want all of the columns except the label column
+        num_X_train1 = numerical_df1.iloc[:, :-1]
+    
+        num_X_train2 = numerical_df2.iloc[:, :-1]
+        
+        cat_X_train1 = categorical_df1.iloc[:, :-1]
+        
+        cat_X_train2 = categorical_df2.iloc[:, :-1]
 
+        
+        for column in num_X_train1.columns:
+            
+            # Calculate common bins based on the range of values in both datasets for this column
+           combined_min = min(np.min(num_X_train1[column]), np.min(num_X_train2[column]))
+           combined_max = max(np.max(num_X_train1[column]), np.max(num_X_train2[column]))
+           bins = np.linspace(combined_min, combined_max, 10)  # Adjust the number of bins as needed
+       
+           generate_distribution_histogram(dataframe = num_X_train1, 
+                                           column_name = column, 
+                                           number_bins = bins, 
+                                           alpha = 0.8, 
+                                           color = 'teal', 
+                                           edgecolor = 'black',
+                                           label_name = 'Original',
+                                           density = True,
+                                           title=f'Column {column}',
+                                           x_axis_label = 'Values', 
+                                           y_axis_label = 'Frequencies')
+           
+           generate_distribution_histogram(dataframe = num_X_train2, 
+                                           column_name = column, 
+                                           number_bins = bins, 
+                                           alpha = 0.3, 
+                                           color = 'darkviolet', 
+                                           edgecolor = 'black',
+                                           label_name = 'Orig + Aug',
+                                           density = True,
+                                           title=f'Column {column}',
+                                           x_axis_label = 'Values', 
+                                           y_axis_label = 'Frequencies')
 
+           plt.show()
+    
+           print(f"Column {column}:")
+           mann_whitney_u_test(list(num_X_train1[column]), list(num_X_train2[column]))
+           
+        for column in cat_X_train1.columns:
+            
+            value_counts1 = cat_X_train1.loc[:, column].value_counts(normalize=True).sort_index()
+            value_counts2 = cat_X_train2.loc[:, column].value_counts(normalize=True).sort_index()
+            
+            # Align indices
+            all_categories = value_counts1.index.union(value_counts2.index)
+            value_counts1 = value_counts1.reindex(all_categories, fill_value=0)
+            
+            print(f"Column {column}:")
+            print("df1:", value_counts1.values)  # Print just the values for cat_X_train1
+            print("df2:", value_counts2.values)  # Print just the values for cat_X_train2
+            
+            # Compute the L2 norm (Euclidean norm) of the difference between the arrays
+            L2_norm = np.linalg.norm(value_counts1.values - value_counts2.values, ord=2)
+            L2_norm = L2_norm / np.linalg.norm(value_counts1.values, ord=2)
+            print("Euclidean norm of difference:", L2_norm)  # Print the differences
+            print()
+            
+    print("-------------Feature Distribution Comparisons-------------------- \n")
+    feat_dist(numerical_df1, categorical_df1, numerical_df2, categorical_df2)
+                    
+        
+        
+      
     ############################## Correlation between columns (Feature vs Feature)  ##################################
     # Function to find correlation between numerical features
     def num_corr(X_train_numerical):
