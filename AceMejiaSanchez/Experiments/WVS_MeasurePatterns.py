@@ -27,7 +27,7 @@ from scipy.stats import kruskal
 ################## Import function ######################################################
 import sys
 sys.path.append('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/')
-import Fake_Patterns
+import Fake_Measures
 
 ################## Import data ######################################################
 df = pd.read_csv("C:/Users/aceme/OneDrive/Documents/SIAM Simons Summer Opportunity/Datasets/WVS_Cross-National_Wave_7_csv_v6_0.csv")
@@ -161,10 +161,13 @@ print("New Shape:", new_shape)
 df[integer_columns] = df[integer_columns].astype(int)
 df[object_columns] = df[object_columns].astype('object')
 
-################# Split dataset into X_train and y_train ####################################
-X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,start_col_index:-1].drop(columns=['Q46']), df.iloc[:,label_index], test_size=0.2, random_state=42)
+# Saving clean data as csv file
+# df.to_csv('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/DEMO_WVS_data.csv', index=False)
 
-################# Running Measure_Patterns() ####################################
-Fake_Patterns.FakePatterns(X_train, y_train)
+# ################# Split dataset into X_train and y_train ####################################
+# X_train, X_test, y_train, y_test = train_test_split(df.iloc[:,start_col_index:-1].drop(columns=['Q46']), df.iloc[:,label_index], test_size=0.2, random_state=42)
+
+# ################# Running Measure_Patterns() ####################################
+# Fake_Patterns.FakePatterns(X_train, y_train)
 
 
