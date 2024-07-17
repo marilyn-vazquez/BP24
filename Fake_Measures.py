@@ -20,27 +20,24 @@ from scipy.stats import kruskal
 The function FakeMeasures does the following :
     
   Parameters:
-    - X_train are all the columns except the label column (last column)
-    - Y_train is the label column (last column)
-    - optional is a boolean list where TRUE indicates a CATEGORICAL variable.
-    This will check if the columns selected are categorical (integers and strings) 
-    or numerical (floats). If optional is not provided, then the program will assume that 
-    the column has integers values, therefore it will be considered categorical
-    
+    - features: a Dataframe of all the columns except the label column 
+    - label: an Dataframe column that represents the label column 
+    - optional: a boolean list where TRUE indicates a CATEGORICAL variable
+        This argument specifies which columns should be considered categorical.
+        If optional is not provided, then the program will ONLY consider floats as
+        NUMERICAL and ALL other data types (integers, objects/strings) as categorical. 
     
   What does this function do?:
     - This function takes 1 dataset. It tests the dataset through 3 different tests 
-    - Correlation between columns test is for (Feature vs Feature)
-    - Chi-square test is for (Feature vs Feature) which compares only the X_trian columns
-    - Chi-square test is for (Feature vs Label) which compares the X_train columns to the Y_train column
+    - Correlation between columns (Feature vs Feature) is for NUMERICAL features & finds their correlation
+    - Chi-square test (Feature vs Feature) is for CATEGORICAL features and compares only the features columns
+    - Chi-square test (Feature vs Label) is for CATEGORICAL features and compares the features columns to the label column
     
   Output:
-    - Correlation between columns test outputs a matrix correlation that only takes
-    the numerical columns in the dataset
-    - Chi-square test (Feature vs Feature) outputs the Chi-square significance values in a matrix, 
-    and the p-value in another matrix. Both take only the catgorical columns in the dataset
-    - Chi-square test (Feature vs Label) outputs the the Chi-square significance values and p-values
-    in 2 columns. Both take only the catgorical columns in the dataset
+    - Correlation between columns (Feature vs Feature) returns a correlation matrix for NUMERICAL features
+    - Chi-square test (Feature vs Feature) returns 2 Dataframes for every combination of CATEGORICAL features: 
+        a matrix of the Chi-square statistics and a matrix of the p-values
+    - Chi-square test (Feature vs Label) returns a Dataframe of the Chi-square statistics and p-values in 2 columns
 
 """
 
@@ -48,8 +45,8 @@ The function FakeMeasures does the following :
     
 ################## Import function ############################################
 # import sys
-# sys.path.append('C:/Users/...YOUR Measure_Patterns.py FILE PATH HERE.../')
-# import Measure_Patterns
+# sys.path.append('C:/Users/...YOUR Fake_Measures.py FILE PATH HERE.../')
+# import Fake_Measures
 
 ################## Import data ################################################
 # df = pd.read_csv("C:/Users/...YOUR data FILE PATH HERE")
@@ -61,14 +58,14 @@ The function FakeMeasures does the following :
 # X_train, X_test, y_train, y_test = train_test_split(df.iloc[:, YOUR COLUMN INDEXES], df.iloc[:, YOUR LABEL INDEX], test_size=0.2, random_state=42)
 
 ################## Running Measure_Patterns() #################################
-# Measure_Patterns.MeasurePatterns(X_train, y_train)
+# Fake_Measures.FakeMeasures(X_train, y_train)
 
 #################### DO NOT UNCOMMENT!!!!!!!! #################################
 
 # Function Measure_Patterns begins here!
-def FakeMeasures(X_train, y_train, optional=None):
+def FakeMeasures(features, label, optional=None):
     
-    # Initialize empty dataframes for numerical and categorical data
+    # Initialize empty dataframes for NUMERICAL and CATEGORICAL data
     numerical_df = pd.DataFrame()
     categorical_df = pd.DataFrame()
     
@@ -76,37 +73,37 @@ def FakeMeasures(X_train, y_train, optional=None):
     if optional is None:
         print("Optional parameter not provided. Assuming integers values are categorical")
     
-        # Splitting X_train into numerical subset 
+        # Splitting features into NUMERICAL subset 
         print("\nNumerical DataFrame:")
-        numerical_df = X_train.select_dtypes(include = ['float', 'float64'])
+        numerical_df = features.select_dtypes(include = ['float', 'float64'])
         print(numerical_df)
 
-        # Splitting X_train into categorical subset 
+        # Splitting features into CATEGORICAL subset 
         print("\nCategorical DataFrame:")
-        categorical_df = X_train.select_dtypes(exclude=['float', 'float64'])
+        categorical_df = features.select_dtypes(exclude=['float', 'float64'])
         print(categorical_df)
     else:
-        # Create empty numerical & categorical data frames
+        # Create empty NUMERICAL & CATEGORICAL data frames
         numerical = []
         numerical_colnames = []
         categorical = []
         categorical_colnames = []
         
-        # Check that length of optional = # of columns in X_train
-        # Optional is the column type for X_train, so the lengths should be equal
-        if len(optional) == len(X_train.columns):
+        # Check that length of optional = # of columns in features
+        # Optional is the column type for features, so the lengths should be equal
+        if len(optional) == len(features.columns):
             # For all the values in optional
             for i in range(len(optional)):
                 if optional[i] == True:
-                    # Save categorical column in numerical list
-                    categorical.append(X_train.iloc[:,i])
-                    # Save categorical column name
-                    categorical_colnames.append(X_train.columns[i])
+                    # Save CATEGORICAL column in CATEGORICAL list
+                    categorical.append(features.iloc[:,i])
+                    # Save CATEGORICAL column name
+                    categorical_colnames.append(features.columns[i])
                 else: 
-                    # Save numerical column in numerical list
-                    numerical.append(X_train.iloc[:,i])
-                    # Save numerical column name
-                    numerical_colnames.append(X_train.columns[i]) 
+                    # Save NUMERICAL column in NUMERICAL list
+                    numerical.append(features.iloc[:,i])
+                    # Save NUMERICAL column name
+                    numerical_colnames.append(features.columns[i]) 
             # Turn transposed arrays into dataframes
             numerical_df = pd.DataFrame(np.transpose(numerical))
             categorical_df = pd.DataFrame(np.transpose(categorical))
@@ -120,14 +117,15 @@ def FakeMeasures(X_train, y_train, optional=None):
             print(categorical_df)
             
         else:
-            print("The length of X_train and optional are different.")
+            print("The length of features and optional are different.")
 
 
-################# Correlation between columns (numerical) Code ################
-    # Takes the X_train data to find correlation between NUMERICAL features
-    def num_corr(X_train_numerical):
-        matrix = X_train_numerical.corr(method='pearson')
+################# Correlation between columns (NUMERICAL) Code ################
+    # Takes the features data to find correlation between NUMERICAL features
+    def num_corr(features_numerical):
+        matrix = features_numerical.corr(method='pearson')
         print("---------------------------Correlation Matrix------------------------- \n", matrix)
+        return matrix
      
     #Calls the function so the matrix prints out    
     num_corr(numerical_df)
@@ -135,11 +133,11 @@ def FakeMeasures(X_train, y_train, optional=None):
 ##################### Chi-Square (F vs F) Code ################################
     
     print("\n------------------Chi-Squared for Features v. Features-----------------------")
-    # Finds dependency between all features in X_train
-    def chi_squared_fvf(X_train):
+    # Finds dependency between all CATEGORICAL features
+    def chi_squared_fvf(features):
             
         # Extract variable names
-        variable_names = list(X_train.columns)
+        variable_names = list(features.columns)
     
         # Initialize matrices to store chi-squared and p-values
         num_variables = len(variable_names)
@@ -153,7 +151,7 @@ def FakeMeasures(X_train, y_train, optional=None):
         for i, j in combinations(range(num_variables), 2):
             
             # Creates contigency table of feature i v. feature j
-            contingency_table = pd.crosstab(X_train.iloc[:, i], X_train.iloc[:, j])
+            contingency_table = pd.crosstab(features.iloc[:, i], features.iloc[:, j])
             
             # Check if any cell in the contingency table is below 5 & appends
             below_5.append((contingency_table < 5).any().any())
@@ -181,18 +179,19 @@ def FakeMeasures(X_train, y_train, optional=None):
         print(chi_squared_df)
         print("\nP-Values:")
         print(p_values_df)
+        return chi_squared_df, p_values_df
         
     chi_squared_fvf(categorical_df)
     
 ##################### Chi-Square (F vs label column) Code #####################
     
     print("\n------------------------Chi-Square (F vs label column)------------------------")
-    # Finds dependency between all features in X_train & the label in y_train
-    def chi_squared_fvl(X_train, y_train):
+    # Finds dependency between all CATEGORICAL features & the label
+    def chi_squared_fvl(features, label):
             
-        # Combining X_train and y_train
-        df = X_train
-        df['label'] = y_train
+        # Combining features and label
+        df = features # Re-naming the features dataframe to 'df'
+        df['user_label'] = label # Adding label as last column to df
     
         # Number of features, excluding label
         var_count = len(df.columns)-1
@@ -231,16 +230,17 @@ def FakeMeasures(X_train, y_train, optional=None):
         # Print the dataFrame
         print("Label:", df.columns.values[-1])
         print(results_df.to_string(index=False))
+        return results_df
         
-    chi_squared_fvl(categorical_df, y_train)
+    chi_squared_fvl(categorical_df, label)
     
 # ############################# ANOVA (Feature vs Feature) ######################
 #     print("\n------------------ANOVA for Features v. Features-----------------------")
-#     # Finds dependency between all features in X_train
-#     def anova_fvf(X_train):
+#     # Finds dependency between all features in features
+#     def anova_fvf(features):
             
 #         # Extract variable names
-#         variable_names = list(X_train.columns)
+#         variable_names = list(features.columns)
     
 #         # Initialize matrices to store chi-squared and p-values
 #         num_variables = len(variable_names)
@@ -251,7 +251,7 @@ def FakeMeasures(X_train, y_train, optional=None):
 #         for i, j in combinations(range(num_variables), 2):
     
 #             # Compute ANOVA: f-statistics and p-values
-#             f, p = f_oneway(X_train.iloc[:, i], X_train.iloc[:, j])
+#             f, p = f_oneway(features.iloc[:, i], features.iloc[:, j])
                 
 #             # Assign results to f_stats and p_values matrices
 #             f_stats[i, j] = f
@@ -269,20 +269,20 @@ def FakeMeasures(X_train, y_train, optional=None):
 #         print("\nP-Values:")
 #         print(p_values_df)
         
-#     anova_fvf(X_train)
+#     anova_fvf(features)
     
 # ############################# ANOVA (Feature vs Label) ######################
 #     print("\n------------------ ANOVA (Feature vs Label) -----------------------")
     
-#     # Finds dependency between all features in X_train & the label in y_train
-#     def anova_fvl(X_train, y_train):
+#     # Finds dependency between all features in features & the label  
+#     def anova_fvl(features, label):
         
-#         # Combining X_train and y_train
-#         df = X_train
-#         df['y_train'] = y_train
+#         # Combining features and label
+#         df = features
+#         df['user_label'] = label
     
 #         # Number of features, excluding label
-#         var_count = len(X_train.columns)-1
+#         var_count = len(features.columns)-1
     
 #         # Creates an empty array for f-statistic and P-values
 #         results = []
@@ -313,15 +313,15 @@ def FakeMeasures(X_train, y_train, optional=None):
 #         print(results_df.to_string(index=False))
     
 #     # Run ANOVA
-#     anova_fvl(X_train, y_train)
+#     anova_fvl(features, label)
     
 # ################## KRUSKAL-WALLIS H Test (FvF) #######################################
     
 #     print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
-#     # Determines if all features in X_train have same mean via ranks
-#     def KWH_fvf(X_train):
+#     # Determines if all features in features have same mean via ranks
+#     def KWH_fvf(features):
 #         # Extract variable names
-#         variable_names = list(X_train.columns)
+#         variable_names = list(features.columns)
     
 #         # Initialize matrices to store KWH-statistic and p-values
 #         num_variables = len(variable_names)
@@ -332,14 +332,14 @@ def FakeMeasures(X_train, y_train, optional=None):
 #         for i, j in combinations(range(num_variables), 2):
 #             try:
 #                 # Checks if both columns are identical; KWH cannot run if so
-#                 if np.array_equal(X_train.iloc[:, i], X_train.iloc[:, j]):
+#                 if np.array_equal(features.iloc[:, i], features.iloc[:, j]):
 #                     kwh_stats[i, j] = np.nan # Replacing that matrix value with NaN instead of running KWH test
 #                     kwh_stats[j, i] = np.nan
 #                     p_values[i, j] = np.nan
 #                     p_values[j, i] = np.nan
 #                 else:
 #                     # Compute KRUSKA-WALLIS H Test
-#                     kwh, p = kruskal(X_train.iloc[:, i], X_train.iloc[:, j])
+#                     kwh, p = kruskal(features.iloc[:, i], features.iloc[:, j])
                     
 #                     # Assign results to kwh_stats and p_values matrices
 #                     kwh_stats[i, j] = kwh
@@ -359,21 +359,21 @@ def FakeMeasures(X_train, y_train, optional=None):
 #         print("\nP-Values:")
 #         print(p_values_df)
         
-#     KWH_fvf(X_train)
+#     KWH_fvf(features)
     
 # ################## KRUSKAL-WALLIS H Test #######################################
 
 #     print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
     
-#     # Determines if all features in X_train & the label in y_train have same mean via ranks
-#     def KWH_fvl(X_train, y_train):
+#     # Determines if all features in features & the label have same mean via ranks
+#     def KWH_fvl(features, label):
         
-#         # Combining X_train and y_train
-#         df = X_train
-#         df['y_train'] = y_train
+#         # Combining features and label
+#         df = features
+#         df['user_label'] = label
     
 #         # Number of features, excluding label
-#         var_count = len(X_train.columns)-1
+#         var_count = len(features.columns)-1
         
 #         # Creates an empty array for f-statistic and P-values
 #         results = []
@@ -404,7 +404,7 @@ def FakeMeasures(X_train, y_train, optional=None):
 #         print(results_df.to_string(index=False))
     
 #     # Run ANOVA
-#     KWH_fvl(X_train, y_train)
+#     KWH_fvl(features, label)
 
 ########################## Histogram/Graphing #################################
     # print("------------------------Histogram/Graphing-----------------------------") 
