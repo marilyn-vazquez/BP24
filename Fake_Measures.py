@@ -17,10 +17,30 @@ from scipy.stats import f_oneway
 from scipy.stats import kruskal
 
 """
-The function Measure_Patterns has 3 parameters: X_train, y_train, optional
-optional will check if the columns selected is categorical (integers and strings) or numerical (float)
-if optional is not provided, then the program will assume that the column has integers values, therefore it will be considered categorical
-optional: a boolean list where TRUE indicates a CATEGORICAL variable 
+The function FakeMeasures does the following :
+    
+  Parameters:
+    - X_train are all the columns except the label column (last column)
+    - Y_train is the label column (last column)
+    - optional is a boolean list where TRUE indicates a CATEGORICAL variable.
+    This will check if the columns selected are categorical (integers and strings) 
+    or numerical (floats). If optional is not provided, then the program will assume that 
+    the column has integers values, therefore it will be considered categorical
+    
+    
+  What does this function do?:
+    - This function takes 1 dataset. It tests the dataset through 3 different tests 
+    - Correlation between columns test is for (Feature vs Feature)
+    - Chi-square test is for (Feature vs Feature) which compares only the X_trian columns
+    - Chi-square test is for (Feature vs Label) which compares the X_train columns to the Y_train column
+    
+  Output:
+    - Correlation between columns test outputs a matrix correlation that only takes
+    the numerical columns in the dataset
+    - Chi-square test (Feature vs Feature) outputs the Chi-square significance values in a matrix, 
+    and the p-value in another matrix. Both take only the catgorical columns in the dataset
+    - Chi-square test (Feature vs Label) outputs the the Chi-square significance values and p-values
+    in 2 columns. Both take only the catgorical columns in the dataset
 
 """
 
@@ -46,7 +66,7 @@ optional: a boolean list where TRUE indicates a CATEGORICAL variable
 #################### DO NOT UNCOMMENT!!!!!!!! #################################
 
 # Function Measure_Patterns begins here!
-def FakePatterns(X_train, y_train, optional=None):
+def FakeMeasures(X_train, y_train, optional=None):
     
     # Initialize empty dataframes for numerical and categorical data
     numerical_df = pd.DataFrame()

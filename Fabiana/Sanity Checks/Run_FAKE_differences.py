@@ -61,7 +61,7 @@ data2 = dataset2.iloc[:, -13:]
 # Apply rounding and conversion to integers for the last 5 columns
 data2.iloc[:, -5:] = dataset2.iloc[:, -5:].round().astype(int)  # only for new generated points
 # Reset the column index to go from 0 to 12
-data2 = range(13)
+data2.columns = range(13)
 # Display the first few rows of the new DataFrame
 print(data2)
 
