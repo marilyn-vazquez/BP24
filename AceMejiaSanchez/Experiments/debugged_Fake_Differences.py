@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul 16 20:32:57 2024
+Created on Wed Jul 17 09:14:55 2024
 
-@author: fabianafazio
+@author: aceme
 """
+
 # upload libraries
 import numpy as np
 import pandas as pd
@@ -17,12 +17,12 @@ from scipy import stats
     
 ################## Import function ############################################
 import sys
-sys.path.append('/Users/fabianafazio/Documents/GitHub/BP24/')
+sys.path.append('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/')
 import Fake_Differences
 
 ################## Import data ################################################
-dataset1 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Gaussian/gaussian_orig.csv", header=None)
-dataset2 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Gaussian/gaussian_new.csv", header=None)
+dataset1 = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Data/Gaussian/gaussian_orig.csv", header=None)
+dataset2 = pd.read_csv("C:/Users/aceme/OneDrive/Documents/GitHub/BP24/Ellee/Data/Gaussian/gaussian_new.csv", header=None)
 
 ################# Categorical and Numerical Columns ###########################
 
@@ -92,6 +92,5 @@ print(data2)
 
 ################## Running FakeDifferences() #################################
 Fake_Differences.FakeDifferences(data1, data2)
-
 
 #################### DO NOT UNCOMMENT!!!!!!!! #################################
