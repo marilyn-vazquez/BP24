@@ -3,15 +3,43 @@
 """
 Created on Tue Jul 16 15:55:06 2024
 
+FakeDifferences measures the following:
+    - The differences in matrices with the Correlation Matrix Test (Feature vs Feature)
+    - The count of changes in p-values with the Chi-Square (Feature vs Feature)
+    - The count of changes in p-values with the Chi-Square (Feature vs Label)
+
+
 @author: fabianafazio
 """
 
-# upload libraries
+# Upload libraries
 import numpy as np
 import pandas as pd
 from numpy import linalg
 from itertools import combinations
 from scipy import stats
+
+# STEPS TO DO IN A     SEPARATE     FILE:
+    
+################## Import function ############################################
+# import sys
+# sys.path.append('/Users/...YOUR FILE PATH HERE FOR FAKE_DIFFERENCES.../')
+# import Fake_Differences
+
+################## Import data ################################################
+# df = pd.read_csv("C:/Users/...YOUR dataset FILE PATH HERE")
+
+################## Data cleaning ##############################################
+# Whatever changes you make to your data set
+
+################# Categorical and Numerical Columns ###########################
+# Whatever subsetting you make to your columns
+
+################## Running FakeDifferences() #################################
+# Fake_Differences.FakeDifferences(data1, data2)
+
+#################### DO NOT UNCOMMENT!!!!!!!! #################################
+
 
 
 def FakeDifferences(data1, data2, optional=None):
