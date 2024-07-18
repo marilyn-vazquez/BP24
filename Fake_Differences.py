@@ -16,6 +16,11 @@ The function FakeDifferences does the following :
     
   What does this function do?:
     - This function takes 2 datasets and compares the differences between them
+    - Mann-Whitney U Test is for (Feature  Distribution) and compares the historgram 
+    distributions of each numerical column before vs after augmentation
+    - Categorical proportions test is for (Feature Distribution) of categorical variables
+    and compares the subcategory proportions before vs. after augmentation by finding
+    the Euclidean norm of the difference between the arrays of subcategory proportions
     - Correlation between columns test is for (Feature vs Feature) and tests the 
     Frobenius norm which computes the difference between the correlation matrices
     - Chi-square test is for (Feature vs Feature) which compares only the feature columns in the dataset 
@@ -24,6 +29,13 @@ The function FakeDifferences does the following :
     the label column
     
   Output:
+    - The Mann-Whitney U Test outputs a visual representation of the historgram for every
+    numerical column, where the blue color represents the overlap between the historgram
+    of before vs after augmentation. It also outputs a U-Statistic and a p-value, which indicates
+    whether the difference in the distributions is significant or not
+    - The categorical proportions test prints out the proportions of observations in each of the
+    subcategories for every categorical column before and after augmentation and it also
+    prints the Euclidean norm of the difference between the two
     - Correlation between columns test outputs 2 matrices correlations that only takes
     the numerical columns in the dataset. This outputs the differences between both correlations
     by printing the absolute error and relative error betweem them
