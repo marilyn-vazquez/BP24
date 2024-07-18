@@ -150,7 +150,7 @@ def FakeDifferences(data1, data2, optional=None):
                                     title='', x_axis_label='', y_axis_label=''):
     
             plt.hist(dataframe[column_name], bins = number_bins, alpha = alpha, color = color, 
-                 edgecolor = edgecolor, label = label_name, density = density)
+                  edgecolor = edgecolor, label = label_name, density = density)
             plt.title(title)
             plt.xlabel(x_axis_label)
             plt.ylabel(y_axis_label)
@@ -179,38 +179,38 @@ def FakeDifferences(data1, data2, optional=None):
         for column in num_X_train1.columns:
             
             # Calculate common bins based on the range of values in both datasets for this column
-           combined_min = min(np.min(num_X_train1[column]), np.min(num_X_train2[column]))
-           combined_max = max(np.max(num_X_train1[column]), np.max(num_X_train2[column]))
-           bins = np.linspace(combined_min, combined_max, 10)  # Adjust the number of bins as needed
+            combined_min = min(np.min(num_X_train1[column]), np.min(num_X_train2[column]))
+            combined_max = max(np.max(num_X_train1[column]), np.max(num_X_train2[column]))
+            bins = np.linspace(combined_min, combined_max, 10)  # Adjust the number of bins as needed
        
-           generate_distribution_histogram(dataframe = num_X_train1, 
-                                           column_name = column, 
-                                           number_bins = bins, 
-                                           alpha = 0.8, 
-                                           color = 'teal', 
-                                           edgecolor = 'black',
-                                           label_name = 'Original',
-                                           density = True,
-                                           title=f'Column {column}',
-                                           x_axis_label = 'Values', 
-                                           y_axis_label = 'Frequencies')
+            generate_distribution_histogram(dataframe = num_X_train1, 
+                                            column_name = column, 
+                                            number_bins = bins, 
+                                            alpha = 0.8, 
+                                            color = 'teal', 
+                                            edgecolor = 'black',
+                                            label_name = 'Original',
+                                            density = True,
+                                            title=f'Column {column}',
+                                            x_axis_label = 'Values', 
+                                            y_axis_label = 'Frequencies')
            
-           generate_distribution_histogram(dataframe = num_X_train2, 
-                                           column_name = column, 
-                                           number_bins = bins, 
-                                           alpha = 0.3, 
-                                           color = 'darkviolet', 
-                                           edgecolor = 'black',
-                                           label_name = 'Orig + Aug',
-                                           density = True,
-                                           title=f'Column {column}',
-                                           x_axis_label = 'Values', 
-                                           y_axis_label = 'Frequencies')
+            generate_distribution_histogram(dataframe = num_X_train2, 
+                                            column_name = column, 
+                                            number_bins = bins, 
+                                            alpha = 0.3, 
+                                            color = 'darkviolet', 
+                                            edgecolor = 'black',
+                                            label_name = 'Orig + Aug',
+                                            density = True,
+                                            title=f'Column {column}',
+                                            x_axis_label = 'Values', 
+                                            y_axis_label = 'Frequencies')
 
-           plt.show()
+            plt.show()
     
-           print(f"Column {column}:")
-           mann_whitney_u_test(list(num_X_train1[column]), list(num_X_train2[column]))
+            print(f"Column {column}:")
+            mann_whitney_u_test(list(num_X_train1[column]), list(num_X_train2[column]))
            
         for column in cat_X_train1.columns:
             

@@ -60,12 +60,44 @@ import Fake_Differences
 
 ############################### Import data ##########################################
 data1 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Gaussian/gaussian_orig.csv", header=None)
-data2 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/gaussian_randswap.csv", header=None)
+#data1 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Uniform/uniform_orig.csv", header=None)
+#data1 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Stacked/stacked_orig.csv", header=None)
+
+
+# Datasets after augmentation
+#data1 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Stacked/stacked_new.csv", header=None)
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/stacked_HAT.csv")
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/stacked_modpmone.csv")
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/stacked_randswap.csv")
+#test = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/stacked_test.csv")
+
+#data1 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Uniform/uniform_new.csv", header=None)
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/uniform_HAT.csv")
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/uniform_modpmone.csv")
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/uniform_randswap.csv")
+#test = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/uniform_test.csv")
+
+
+#data1 = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/Ellee/Data/Gaussian/gaussian_new.csv", header=None)
+aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/gaussian_HAT.csv")
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/gaussian_modpmone.csv")
+#aug = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/gaussian_randswap.csv")
+test = pd.read_csv("/Users/fabianafazio/Documents/GitHub/BP24/AugSynDatasets/gaussian_test.csv")
+
+
+
+array1 = aug.to_numpy()
+array2 = test.to_numpy()
+array = np.vstack((array1, array2))
+data2 = pd.DataFrame(array)
+# Then data2 is the augmented + full original dataset
 
 
 ################# Categorical and Numerical Columns ###########################
 
-columns_to_convert = [2, 3, 7, 9, 12]
+columns_to_convert = [2, 3, 7, 9, 12]     #gaussian dataset
+#columns_to_convert = [2, 7, 10, 15, 24]     #uniform dataset
+#columns_to_convert = [16,17,18,19,20,21,22,23,24]     #stacked dataset
 
 for col in columns_to_convert:
     data1.iloc[:, col] = data1.iloc[:, col].astype('category')
