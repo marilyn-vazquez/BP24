@@ -306,7 +306,7 @@ def FakeDifferences(data1, data2, optional=None):
         p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
 
         # Printing the matrix-like output with variable names
-        print("Chi-Squared Values:")
+        print("Chi-Squared Statistics:")
         print(chi_squared_df)
         print("\nP-Values:")
         print(p_values_df)

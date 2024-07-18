@@ -175,7 +175,7 @@ def FakeMeasures(features, label, optional=None):
             print("WARNING: The validity of this chi-squared test may be violated as there are \n         cells below 5 in at least one contingency table of observed values.") 
         
         # Printing the matrix-like output with variable names
-        print("Chi-Squared Values:")
+        print("Chi-Squared Statistics:")
         print(chi_squared_df)
         print("\nP-Values:")
         print(p_values_df)
