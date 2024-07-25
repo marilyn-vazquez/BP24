@@ -25,25 +25,21 @@ plt.scatter(x1[:,0], x1[:,1], c = y1, cmap = "coolwarm", s = 80, edgecolors='bla
 
 # Add title and labels
 plt.rcParams['font.size'] = 20
-# plt.title('Pre-Augmentation')
+#plt.title('Pre-Augmentation')
 plt.title('Post-Augmentation')
 # plt.xlabel('Feature 1')
 # plt.ylabel('Feature 2')
-
 
 # Set x and y axis limits
 plt.xlim(-2, 3)
 plt.ylim(-2, 2)
 
-# Add a legend
-plt.legend()
+plt.gca().set_xticks([])
+plt.gca().set_yticks([])
 
 # Save plot
 #plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/pre_data_aug.png', dpi=300)
-#plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/post_data_aug.png', dpi=300)
-
-plt.gca().set_xticks([])
-plt.gca().set_yticks([])
+plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/post_data_aug.png', dpi=300)
 
 # Show the plot
 plt.show()
