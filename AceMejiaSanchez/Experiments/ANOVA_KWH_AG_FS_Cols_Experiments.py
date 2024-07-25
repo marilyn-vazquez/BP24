@@ -480,7 +480,7 @@ print("Number of False values for Poisson & Uniform:", FS_pois_uni_sigs_FALSE)
 ################## Graphing ######################################################
 
 # Data
-categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Alexander-Govern', 'Friedman Squared']
+categories = ['ANOVA', 'Kruskal-Wallis H\n Test', 'Alexander-Govern', 'Friedman Squared']
 bin_gauss_SIGS = [ANOVA_bin_gaus_sigs_TRUE, KWH_bin_gaus_sigs_TRUE, AG_bin_gaus_sigs_TRUE, FS_bin_gaus_sigs_TRUE]
 bin_gauss_NO_SIGS = [ANOVA_bin_gaus_sigs_FALSE, KWH_bin_gaus_sigs_FALSE, AG_bin_gaus_sigs_FALSE, FS_bin_gaus_sigs_FALSE]
 
@@ -611,3 +611,53 @@ plt.ylabel('Y-axis')
 plt.grid(True)
 
 plt.show()
+
+
+########### CODE TO CREATE ARTICLE FIGURE WITHOUT FRIEDMAN CHISQUARED TEST ####
+################## Graphing ######################################################
+
+# Data
+categories = ['ANOVA', 'Kruskal-Wallis H Test', 'Alexander-Govern']
+bin_gauss_SIGS = [ANOVA_bin_gaus_sigs_TRUE, KWH_bin_gaus_sigs_TRUE, AG_bin_gaus_sigs_TRUE]
+bin_gauss_NO_SIGS = [ANOVA_bin_gaus_sigs_FALSE, KWH_bin_gaus_sigs_FALSE, AG_bin_gaus_sigs_FALSE]
+
+bin_uniform_SIGS = [ANOVA_bin_uni_sigs_TRUE, KWH_bin_uni_sigs_TRUE, AG_bin_uni_sigs_TRUE]
+bin_uniform_NO_SIGS = [ANOVA_bin_uni_sigs_FALSE, KWH_bin_uni_sigs_FALSE, AG_bin_uni_sigs_FALSE]
+
+poisson_gauss_SIGS = [ANOVA_pois_gaus_sigs_TRUE, KWH_pois_gaus_sigs_TRUE, AG_pois_gaus_sigs_TRUE]
+poisson_gauss_NO_SIGS = [ANOVA_pois_gaus_sigs_FALSE, KWH_pois_gaus_sigs_FALSE, AG_pois_gaus_sigs_FALSE]
+
+poisson_uniform_SIGS = [ANOVA_pois_uni_sigs_TRUE, KWH_pois_uni_sigs_TRUE, AG_pois_uni_sigs_TRUE]
+poisson_uniform_NO_SIGS = [ANOVA_pois_uni_sigs_FALSE, KWH_pois_uni_sigs_FALSE, AG_pois_uni_sigs_FALSE]
+
+# Number of categories
+n = len(categories)
+
+# X axis locations for the groups
+ind = np.arange(n)
+
+# Width of the bars
+width = 0.35
+
+
+# Plotting
+fig, ax = plt.subplots()
+
+# Bars for Significant & Not Significant for each combo
+bar7 = ax.bar(ind - width/2, poisson_uniform_SIGS, width, label='Significant', color='skyblue')
+bar8 = ax.bar(ind + width/2, poisson_uniform_NO_SIGS, width, label='Not Significant', color='salmon')
+
+# Adding labels, title, and legend
+ax.set_xlabel('Tests')
+ax.set_ylabel('Significance Counts')
+#ax.set_title('ANOVA v. KWH Test v. AG Test\n on POISSON & UNIFORM columns')
+ax.set_xticks(ind)
+ax.set_xticklabels(categories)
+ax.legend()
+
+# Save article figure
+plt.savefig('C:/Users/aceme/OneDrive/Documents/GitHub/BP24/AceMejiaSanchez/Images/ANOVA_alts_test_comparison_randomdata.png', dpi=300)
+
+
+# Show plot
+plt.show() 
