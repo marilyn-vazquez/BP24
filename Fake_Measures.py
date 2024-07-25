@@ -234,230 +234,230 @@ def FakeMeasures(features, label, optional=None):
         
     chi_squared_fvl(categorical_df, label)
     
-# ############################# ANOVA (Feature vs Feature) ######################
-#     print("\n------------------ANOVA for Features v. Features-----------------------")
-#     # Finds dependency between all features in features
-#     def anova_fvf(features):
+############################# ANOVA (Feature vs Feature) ######################
+    print("\n------------------ANOVA for Features v. Features-----------------------")
+    # Finds dependency between all features in features
+    def anova_fvf(features):
             
-#         # Extract variable names
-#         variable_names = list(features.columns)
+        # Extract variable names
+        variable_names = list(features.columns)
     
-#         # Initialize matrices to store chi-squared and p-values
-#         num_variables = len(variable_names)
-#         f_stats = np.zeros((num_variables, num_variables))
-#         p_values = np.zeros((num_variables, num_variables))
+        # Initialize matrices to store chi-squared and p-values
+        num_variables = len(variable_names)
+        f_stats = np.zeros((num_variables, num_variables))
+        p_values = np.zeros((num_variables, num_variables))
     
-#         # Compute chi-squared and p-values for each pair of variables
-#         for i, j in combinations(range(num_variables), 2):
+        # Compute chi-squared and p-values for each pair of variables
+        for i, j in combinations(range(num_variables), 2):
     
-#             # Compute ANOVA: f-statistics and p-values
-#             f, p = f_oneway(features.iloc[:, i], features.iloc[:, j])
+            # Compute ANOVA: f-statistics and p-values
+            f, p = f_oneway(features.iloc[:, i], features.iloc[:, j])
                 
-#             # Assign results to f_stats and p_values matrices
-#             f_stats[i, j] = f
-#             f_stats[j, i] = f  # Assign to symmetric position in the matrix
-#             p_values[i, j] = p
-#             p_values[j, i] = p  # Assign to symmetric position in the matrix
+            # Assign results to f_stats and p_values matrices
+            f_stats[i, j] = f
+            f_stats[j, i] = f  # Assign to symmetric position in the matrix
+            p_values[i, j] = p
+            p_values[j, i] = p  # Assign to symmetric position in the matrix
     
-#         # Create a DataFrame with variable names as index and columns
-#         f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
-#         p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+        # Create a DataFrame with variable names as index and columns
+        f_stats_df = pd.DataFrame(f_stats, index=variable_names, columns=variable_names)
+        p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
     
-#         # Printing the matrix-like output with variable names
-#         print("\nF-Statistics:")
-#         print(f_stats_df)
-#         print("\nP-Values:")
-#         print(p_values_df)
+        # Printing the matrix-like output with variable names
+        print("\nF-Statistics:")
+        print(f_stats_df)
+        print("\nP-Values:")
+        print(p_values_df)
         
-#     anova_fvf(features)
+    anova_fvf(features)
     
-# ############################# ANOVA (Feature vs Label) ######################
-#     print("\n------------------ ANOVA (Feature vs Label) -----------------------")
+############################# ANOVA (Feature vs Label) ######################
+    print("\n------------------ ANOVA (Feature vs Label) -----------------------")
     
-#     # Finds dependency between all features in features & the label  
-#     def anova_fvl(features, label):
+    # Finds dependency between all features in features & the label  
+    def anova_fvl(features, label):
         
-#         # Combining features and label
-#         df = features
-#         df['user_label'] = label
+        # Combining features and label
+        df = features
+        df['user_label'] = label
     
-#         # Number of features, excluding label
-#         var_count = len(features.columns)-1
+        # Number of features, excluding label
+        var_count = len(features.columns)-1
     
-#         # Creates an empty array for f-statistic and P-values
-#         results = []
+        # Creates an empty array for f-statistic and P-values
+        results = []
     
-#         for i in range(0, var_count):
+        for i in range(0, var_count):
             
-#             # Compute ANOVA
-#             f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
+            # Compute ANOVA
+            f_statistic, p_value = f_oneway(df.iloc[:,i], df.iloc[:,-1])
             
-#             # Save p-value significance into list
-#             if p_value < 0.05:
-#                 significance = "Significant"
-#             else:
-#                 significance = "Not Significant"
+            # Save p-value significance into list
+            if p_value < 0.05:
+                significance = "Significant"
+            else:
+                significance = "Not Significant"
                
-#             # Append results to the list
-#             results.append({
-#                 "Feature": df.columns[i],
-#                 "F-Statistic": f_statistic,
-#                 "P-Value": p_value, 
-#                 "Significance": significance})
+            # Append results to the list
+            results.append({
+                "Feature": df.columns[i],
+                "F-Statistic": f_statistic,
+                "P-Value": p_value, 
+                "Significance": significance})
     
-#         # Create a dataFrame from the results
-#         results_df = pd.DataFrame(results)
+        # Create a dataFrame from the results
+        results_df = pd.DataFrame(results)
         
-#         # Print the dataFrame
-#         print("Label:", df.columns.values[-1])
-#         print(results_df.to_string(index=False))
+        # Print the dataFrame
+        print("Label:", df.columns.values[-1])
+        print(results_df.to_string(index=False))
     
-#     # Run ANOVA
-#     anova_fvl(features, label)
+    # Run ANOVA
+    anova_fvl(features, label)
     
-# ################## KRUSKAL-WALLIS H Test (FvF) #######################################
+################## KRUSKAL-WALLIS H Test (FvF) #######################################
     
-#     print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
-#     # Determines if all features in features have same mean via ranks
-#     def KWH_fvf(features):
-#         # Extract variable names
-#         variable_names = list(features.columns)
+    print("\n------------------ Kruskal-Wallis H Test (Feature vs Feature) -----------------------")
+    # Determines if all features in features have same mean via ranks
+    def KWH_fvf(features):
+        # Extract variable names
+        variable_names = list(features.columns)
     
-#         # Initialize matrices to store KWH-statistic and p-values
-#         num_variables = len(variable_names)
-#         kwh_stats = np.zeros((num_variables, num_variables))
-#         p_values = np.zeros((num_variables, num_variables))
+        # Initialize matrices to store KWH-statistic and p-values
+        num_variables = len(variable_names)
+        kwh_stats = np.zeros((num_variables, num_variables))
+        p_values = np.zeros((num_variables, num_variables))
     
-#         # Compute KWH-statistic and p-value for each pair of variables
-#         for i, j in combinations(range(num_variables), 2):
-#             try:
-#                 # Checks if both columns are identical; KWH cannot run if so
-#                 if np.array_equal(features.iloc[:, i], features.iloc[:, j]):
-#                     kwh_stats[i, j] = np.nan # Replacing that matrix value with NaN instead of running KWH test
-#                     kwh_stats[j, i] = np.nan
-#                     p_values[i, j] = np.nan
-#                     p_values[j, i] = np.nan
-#                 else:
-#                     # Compute KRUSKA-WALLIS H Test
-#                     kwh, p = kruskal(features.iloc[:, i], features.iloc[:, j])
+        # Compute KWH-statistic and p-value for each pair of variables
+        for i, j in combinations(range(num_variables), 2):
+            try:
+                # Checks if both columns are identical; KWH cannot run if so
+                if np.array_equal(features.iloc[:, i], features.iloc[:, j]):
+                    kwh_stats[i, j] = np.nan # Replacing that matrix value with NaN instead of running KWH test
+                    kwh_stats[j, i] = np.nan
+                    p_values[i, j] = np.nan
+                    p_values[j, i] = np.nan
+                else:
+                    # Compute KRUSKA-WALLIS H Test
+                    kwh, p = kruskal(features.iloc[:, i], features.iloc[:, j])
                     
-#                     # Assign results to kwh_stats and p_values matrices
-#                     kwh_stats[i, j] = kwh
-#                     kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
-#                     p_values[i, j] = p
-#                     p_values[j, i] = p  # Assign to symmetric position in the matrix
-#             except ValueError as e:
-#                 print(f"Error: {e}") # if TRY fails, print error 
+                    # Assign results to kwh_stats and p_values matrices
+                    kwh_stats[i, j] = kwh
+                    kwh_stats[j, i] = kwh  # Assign to symmetric position in the matrix
+                    p_values[i, j] = p
+                    p_values[j, i] = p  # Assign to symmetric position in the matrix
+            except ValueError as e:
+                print(f"Error: {e}") # if TRY fails, print error 
     
-#         # Create a DataFrame with variable names as index and columns
-#         kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
-#         p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
+        # Create a DataFrame with variable names as index and columns
+        kwh_stats_df = pd.DataFrame(kwh_stats, index=variable_names, columns=variable_names)
+        p_values_df = pd.DataFrame(p_values, index=variable_names, columns=variable_names)
     
-#         # Printing the matrix-like output with variable names
-#         print("\nKruskal-Wallis H statistic:")
-#         print(kwh_stats_df)
-#         print("\nP-Values:")
-#         print(p_values_df)
+        # Printing the matrix-like output with variable names
+        print("\nKruskal-Wallis H statistic:")
+        print(kwh_stats_df)
+        print("\nP-Values:")
+        print(p_values_df)
         
-#     KWH_fvf(features)
+    KWH_fvf(features)
     
-# ################## KRUSKAL-WALLIS H Test #######################################
+################## KRUSKAL-WALLIS H Test #######################################
 
-#     print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
+    print("\n------------------ Kruskal-Wallis H Test (Feature vs Label) -----------------------")
     
-#     # Determines if all features in features & the label have same mean via ranks
-#     def KWH_fvl(features, label):
+    # Determines if all features in features & the label have same mean via ranks
+    def KWH_fvl(features, label):
         
-#         # Combining features and label
-#         df = features
-#         df['user_label'] = label
+        # Combining features and label
+        df = features
+        df['user_label'] = label
     
-#         # Number of features, excluding label
-#         var_count = len(features.columns)-1
+        # Number of features, excluding label
+        var_count = len(features.columns)-1
         
-#         # Creates an empty array for f-statistic and P-values
-#         results = []
+        # Creates an empty array for f-statistic and P-values
+        results = []
     
-#         for i in range(0, var_count):
+        for i in range(0, var_count):
             
-#             # Compute KRUSKA-WALLIS H Test
-#             kwh_statistic, p_value = kruskal(df.iloc[:,i], df.iloc[:,-1])
+            # Compute KRUSKA-WALLIS H Test
+            kwh_statistic, p_value = kruskal(df.iloc[:,i], df.iloc[:,-1])
             
-#             # Save p-value significance into list
-#             if p_value < 0.05:
-#                 significance = "Significant"
-#             else:
-#                 significance = "Not Significant"
+            # Save p-value significance into list
+            if p_value < 0.05:
+                significance = "Significant"
+            else:
+                significance = "Not Significant"
                
-#             # Append results to the list
-#             results.append({
-#                 "Feature": df.columns[i],
-#                 "Kruskal-Wallis H statistic": kwh_statistic,
-#                 "P-Value": p_value, 
-#                 "Significance": significance})
+            # Append results to the list
+            results.append({
+                "Feature": df.columns[i],
+                "Kruskal-Wallis H statistic": kwh_statistic,
+                "P-Value": p_value, 
+                "Significance": significance})
     
-#         # Create a dataFrame from the results
-#         results_df = pd.DataFrame(results)
+        # Create a dataFrame from the results
+        results_df = pd.DataFrame(results)
         
-#         # Print the dataFrame
-#         print("Label:", df.columns.values[-1])
-#         print(results_df.to_string(index=False))
+        # Print the dataFrame
+        print("Label:", df.columns.values[-1])
+        print(results_df.to_string(index=False))
     
-#     # Run ANOVA
-#     KWH_fvl(features, label)
+    # Run ANOVA
+    KWH_fvl(features, label)
 
-########################## Histogram/Graphing #################################
-    # print("------------------------Histogram/Graphing-----------------------------") 
+######################### Histogram/Graphing #################################
+    print("------------------------Histogram/Graphing-----------------------------") 
     
-    # # Ensure data is 2D
-    # if numerical_df.ndim == 1:
-    #     numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
+    # Ensure data is 2D
+    if numerical_df.ndim == 1:
+        numerical_df = numerical_df.reshape(-1, 1)  # Reshape 1D array to 2D array with one column
     
-    # # Number of features (columns) in the dataset
-    # numerical_num_features = numerical_df.shape[1]
+    # Number of features (columns) in the dataset
+    numerical_num_features = numerical_df.shape[1]
     
-    # # Loop through each numerical feature
-    # for feature_idx in range(numerical_num_features):
-    #     # Extract the current feature data (column)
-    #     feature_df = numerical_df.iloc[:, feature_idx]
+    # Loop through each numerical feature
+    for feature_idx in range(numerical_num_features):
+        # Extract the current feature data (column)
+        feature_df = numerical_df.iloc[:, feature_idx]
     
-    #     # Compute histogram with 10 bins
-    #     hist, bin_edges = np.histogram(feature_df, bins=10)
+        # Compute histogram with 10 bins
+        hist, bin_edges = np.histogram(feature_df, bins=10)
     
-    #     # Print feature number
-    #     print(f"Feature {feature_idx + 1}:")
+        # Print feature number
+        print(f"Feature {feature_idx + 1}:")
         
-    #     # Print bin edges
-    #     print("Bin Edges:", bin_edges)
+        # Print bin edges
+        print("Bin Edges:", bin_edges)
     
-    #     # Store bin heights in a list
-    #     bin_heights = []
-    #     bin_heights.extend(hist)
-    #     print("Array with bin heights:", bin_heights)
+        # Store bin heights in a list
+        bin_heights = []
+        bin_heights.extend(hist)
+        print("Array with bin heights:", bin_heights)
     
-    #     # Store bin probabilities in a list and normalize
-    #     bin_probs = []
-    #     bin_probs.extend(hist)
-    #     bin_probs = np.array(bin_probs) / sum(bin_heights)
-    #     print("Array with bin probabilities:", bin_probs)
+        # Store bin probabilities in a list and normalize
+        bin_probs = []
+        bin_probs.extend(hist)
+        bin_probs = np.array(bin_probs) / sum(bin_heights)
+        print("Array with bin probabilities:", bin_probs)
     
-    #     # Loop through each bin to print range and probabilities
-    #     for i in range(len(hist)):
-    #         bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"  # Bin range
-    #         bin_probability = hist[i] / sum(hist)  # Bin probability
-    #         print(f"Bin {i + 1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
+        # Loop through each bin to print range and probabilities
+        for i in range(len(hist)):
+            bin_range = f"{bin_edges[i]:.2f} to {bin_edges[i+1]:.2f}"  # Bin range
+            bin_probability = hist[i] / sum(hist)  # Bin probability
+            print(f"Bin {i + 1} ({bin_range}): Height = {hist[i]}, Probability = {bin_probability:.2f}")
     
-    #     # Separator between features for clarity
-    #     print("\n" + "="*50 + "\n")
+        # Separator between features for clarity
+        print("\n" + "="*50 + "\n")
     
-    # # Calculate and store probabilities for each categorical column
-    # print("Proportions for Label for Categorical Columns:")
+    # Calculate and store probabilities for each categorical column
+    print("Proportions for Label for Categorical Columns:")
     
-    # for column in categorical_df.columns:
-    #     value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
-    #     # print(f"Probabilities for Categorical Column {column}:")
-    #     print(value_counts)
-    #     print()  # Add an empty line for separation    
+    for column in categorical_df.columns:
+        value_counts = categorical_df[column].value_counts(normalize=True).sort_index()
+        # print(f"Probabilities for Categorical Column {column}:")
+        print(value_counts)
+        print()  # Add an empty line for separation    
         
 
 
