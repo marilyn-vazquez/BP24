@@ -107,9 +107,17 @@ def FakeMeasures(features, label, optional=None):
             # Turn transposed arrays into dataframes
             numerical_df = pd.DataFrame(np.transpose(numerical))
             categorical_df = pd.DataFrame(np.transpose(categorical))
+            
             # Re-attach the column names to numerical_df & categorical_df 
-            numerical_df.columns = numerical_colnames
-            categorical_df.columns = categorical_colnames
+            if numerical_colnames:  # Check if there are numerical columns
+                numerical_df.columns = numerical_colnames # Reassign names
+            else:
+                numerical_df = pd.DataFrame(columns=[])  # Empty dataframe with no columns
+            
+            if categorical_colnames:  # Check if there are categorical columns
+                categorical_df.columns = categorical_colnames # Reassign names
+            else:
+                categorical_df = pd.DataFrame(columns=[])  # Empty dataframe with no columns
 
             print("Numerical DF:")
             print(numerical_df)
